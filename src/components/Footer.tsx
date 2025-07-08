@@ -11,7 +11,7 @@ export const Footer = () => {
           <div className="space-y-4">
             <div className="flex items-center space-x-2">
               <div className="w-8 h-8 bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg"></div>
-              <span className="text-2xl font-bold text-white">EliteShop</span>
+              <span className="text-2xl font-bold text-white">Gentle Living</span>
             </div>
             <p className="text-gray-400 leading-relaxed">
               Premium shopping experience with quality products and exceptional customer service.
@@ -64,7 +64,7 @@ export const Footer = () => {
               </div>
               <div className="flex items-center space-x-2">
                 <Mail className="h-4 w-4" />
-                <span className="text-sm">support@eliteshop.com</span>
+                <span className="text-sm">support@gentleliving.com</span>
               </div>
             </div>
           </div>
@@ -74,7 +74,7 @@ export const Footer = () => {
 
         <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
           <p className="text-sm text-gray-400">
-            © 2024 EliteShop. All rights reserved.
+            © 2025 GentleLiving. All rights reserved.
           </p>
           <div className="flex space-x-6 text-sm text-gray-400">
             <a href="#" className="hover:text-white transition-colors">Privacy Policy</a>
