@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
 import { Badge } from "@/components/ui/badge";
+import { Link, useNavigate } from "react-router-dom";
 import { CreditCard, Truck, Shield } from "lucide-react";
 
 export const CartSummary = () => {
@@ -60,6 +61,7 @@ export const CartSummary = () => {
         </CardContent>
       </Card>
 
+      <Link to="/checkout">
       <Button 
         size="lg" 
         className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white py-6 text-lg"
@@ -67,6 +69,7 @@ export const CartSummary = () => {
         <CreditCard className="mr-2 h-5 w-5" />
         Proceed to Checkout
       </Button>
+      </Link>
 
       <div className="space-y-3 text-sm text-gray-600">
         <div className="flex items-center space-x-2">
