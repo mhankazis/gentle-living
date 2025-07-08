@@ -1,9 +1,9 @@
-
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Star, ShoppingCart, Heart, Eye } from "lucide-react";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 interface ProductGridProps {
   selectedCategory: string;
@@ -12,6 +12,7 @@ interface ProductGridProps {
 
 export const ProductGrid = ({ selectedCategory, sortBy }: ProductGridProps) => {
   const [likedProducts, setLikedProducts] = useState<number[]>([]);
+  const navigate = useNavigate();
 
   const allProducts = [
     {
@@ -107,6 +108,10 @@ export const ProductGrid = ({ selectedCategory, sortBy }: ProductGridProps) => {
     );
   };
 
+  const handleProductClick = (productId: number) => {
+    navigate(`/product/${productId}`);
+  };
+
   return (
     <div>
       <div className="flex justify-between items-center mb-8">
@@ -118,8 +123,8 @@ export const ProductGrid = ({ selectedCategory, sortBy }: ProductGridProps) => {
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {sortedProducts.map((product) => (
-          <Card key={product.id} className="group hover:shadow-xl transition-all duration-300 border-0 bg-white/80 backdrop-blur-sm overflow-hidden">
-            <div className="relative">
+          <Card key={product.id} className="group hover:shadow-xl transition-all duration-300 border-0 bg-white/80 backdrop-blur-sm overflow-hidden cursor-pointer">
+            <div className="relative" onClick={() => handleProductClick(product.id)}>
               <div className={`aspect-square ${product.image} relative overflow-hidden`}>
                 <div className="absolute inset-0 bg-black/10 group-hover:bg-black/20 transition-colors duration-300"></div>
                 <Badge className="absolute top-4 left-4 bg-blue-500 text-white border-0">
@@ -133,7 +138,10 @@ export const ProductGrid = ({ selectedCategory, sortBy }: ProductGridProps) => {
                     className={`h-8 w-8 rounded-full bg-white/90 hover:bg-white transition-colors ${
                       likedProducts.includes(product.id) ? 'text-red-500' : 'text-gray-600'
                     }`}
-                    onClick={() => toggleLike(product.id)}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      toggleLike(product.id);
+                    }}
                   >
                     <Heart className={`h-4 w-4 ${likedProducts.includes(product.id) ? 'fill-current' : ''}`} />
                   </Button>
@@ -141,6 +149,10 @@ export const ProductGrid = ({ selectedCategory, sortBy }: ProductGridProps) => {
                     variant="ghost"
                     size="sm"
                     className="h-8 w-8 rounded-full bg-white/90 hover:bg-white transition-colors text-gray-600"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleProductClick(product.id);
+                    }}
                   >
                     <Eye className="h-4 w-4" />
                   </Button>
@@ -148,7 +160,7 @@ export const ProductGrid = ({ selectedCategory, sortBy }: ProductGridProps) => {
               </div>
             </div>
             
-            <CardContent className="p-6">
+            <CardContent className="p-6" onClick={() => handleProductClick(product.id)}>
               <h3 className="font-semibold text-lg text-gray-900 mb-2 group-hover:text-blue-600 transition-colors">
                 {product.name}
               </h3>
@@ -176,7 +188,13 @@ export const ProductGrid = ({ selectedCategory, sortBy }: ProductGridProps) => {
             </CardContent>
 
             <CardFooter className="p-6 pt-0">
-              <Button className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white group">
+              <Button 
+                className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white group"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  // Add to cart functionality
+                }}
+              >
                 <ShoppingCart className="mr-2 h-4 w-4 group-hover:scale-110 transition-transform" />
                 Add to Cart
               </Button>

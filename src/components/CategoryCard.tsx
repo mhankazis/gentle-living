@@ -2,6 +2,7 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 interface Category {
   id: number;
@@ -13,6 +14,30 @@ interface Category {
 }
 
 export const CategoryCard = ({ category }: { category: Category }) => {
+  const navigate = useNavigate();
+
+  const handleShopNow = () => {
+    const categoryName = category.name.toLowerCase().replace(/ & /g, '-').replace(/ /g, '-');
+    const categoryMap: { [key: string]: string } = {
+      'fashion': 'fashion',
+      'electronics': 'electronics',
+      'home-garden': 'home',
+      'home-&-garden': 'home',
+      'sports-fitness': 'sports',
+      'sports-&-fitness': 'sports',
+      'beauty-health': 'beauty',
+      'beauty-&-health': 'beauty',
+      'automotive': 'automotive',
+      'books-media': 'books',
+      'books-&-media': 'books',
+      'toys-games': 'toys',
+      'toys-&-games': 'toys'
+    };
+    
+    const mappedCategory = categoryMap[categoryName] || 'all';
+    navigate(`/products?category=${mappedCategory}`);
+  };
+
   return (
     <Card className="group hover:shadow-2xl transition-all duration-300 cursor-pointer border-0 bg-white/90 backdrop-blur-sm hover:scale-105 overflow-hidden">
       <div className={`h-32 bg-gradient-to-r ${category.color} relative`}>
@@ -27,6 +52,7 @@ export const CategoryCard = ({ category }: { category: Category }) => {
         <p className="text-gray-600 mb-4 leading-relaxed">{category.description}</p>
         
         <Button 
+          onClick={handleShopNow}
           className="w-full group-hover:bg-gradient-to-r group-hover:from-blue-600 group-hover:to-purple-600 transition-all duration-300"
           variant="outline"
         >
