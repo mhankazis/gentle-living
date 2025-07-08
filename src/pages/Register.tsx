@@ -10,10 +10,13 @@ import { Link, useNavigate } from "react-router-dom";
 import { Eye, EyeOff } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
-const Login = () => {
+const Register = () => {
+  const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
   const navigate = useNavigate();
@@ -22,21 +25,39 @@ const Login = () => {
     e.preventDefault();
     setIsLoading(true);
 
-    // Simulasi login
+    // Validasi password
+    if (password !== confirmPassword) {
+      toast({
+        title: "Registrasi Gagal",
+        description: "Password dan konfirmasi password tidak sama",
+        variant: "destructive",
+      });
+      setIsLoading(false);
+      return;
+    }
+
+    if (password.length < 6) {
+      toast({
+        title: "Registrasi Gagal",
+        description: "Password minimal 6 karakter",
+        variant: "destructive",
+      });
+      setIsLoading(false);
+      return;
+    }
+
+    // Simulasi registrasi
     setTimeout(() => {
-      if (email && password) {
-        // Simpan status login di localStorage
-        localStorage.setItem("isLoggedIn", "true");
-        localStorage.setItem("userEmail", email);
+      if (name && email && password) {
         toast({
-          title: "Login Berhasil",
-          description: "Selamat datang kembali!",
+          title: "Registrasi Berhasil",
+          description: "Akun Anda telah berhasil dibuat. Silakan login.",
         });
-        navigate("/");
+        navigate("/login");
       } else {
         toast({
-          title: "Login Gagal",
-          description: "Email dan password harus diisi",
+          title: "Registrasi Gagal",
+          description: "Semua field harus diisi",
           variant: "destructive",
         });
       }
@@ -52,14 +73,25 @@ const Login = () => {
           <Card className="shadow-2xl border-0 bg-white/90 backdrop-blur-sm">
             <CardHeader className="text-center">
               <CardTitle className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-                Masuk
+                Daftar
               </CardTitle>
               <CardDescription className="text-gray-600">
-                Masuk ke akun Gentle Living Anda
+                Buat akun Gentle Living baru
               </CardDescription>
             </CardHeader>
             <CardContent>
               <form onSubmit={handleSubmit} className="space-y-4">
+                <div className="space-y-2">
+                  <Label htmlFor="name">Nama Lengkap</Label>
+                  <Input
+                    id="name"
+                    type="text"
+                    placeholder="Masukkan nama lengkap"
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                    required
+                  />
+                </div>
                 <div className="space-y-2">
                   <Label htmlFor="email">Email</Label>
                   <Input
@@ -77,7 +109,7 @@ const Login = () => {
                     <Input
                       id="password"
                       type={showPassword ? "text" : "password"}
-                      placeholder="Masukkan password"
+                      placeholder="Minimal 6 karakter"
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
                       required
@@ -97,19 +129,45 @@ const Login = () => {
                     </Button>
                   </div>
                 </div>
+                <div className="space-y-2">
+                  <Label htmlFor="confirmPassword">Konfirmasi Password</Label>
+                  <div className="relative">
+                    <Input
+                      id="confirmPassword"
+                      type={showConfirmPassword ? "text" : "password"}
+                      placeholder="Ulangi password"
+                      value={confirmPassword}
+                      onChange={(e) => setConfirmPassword(e.target.value)}
+                      required
+                    />
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="sm"
+                      className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
+                      onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                    >
+                      {showConfirmPassword ? (
+                        <EyeOff className="h-4 w-4" />
+                      ) : (
+                        <Eye className="h-4 w-4" />
+                      )}
+                    </Button>
+                  </div>
+                </div>
                 <Button
                   type="submit"
                   className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700"
                   disabled={isLoading}
                 >
-                  {isLoading ? "Memproses..." : "Masuk"}
+                  {isLoading ? "Memproses..." : "Daftar"}
                 </Button>
               </form>
               <div className="mt-6 text-center">
                 <p className="text-sm text-gray-600">
-                  Belum punya akun?{" "}
-                  <Link to="/register" className="text-blue-600 hover:underline font-medium">
-                    Daftar di sini
+                  Sudah punya akun?{" "}
+                  <Link to="/login" className="text-blue-600 hover:underline font-medium">
+                    Masuk di sini
                   </Link>
                 </p>
               </div>
@@ -122,4 +180,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default Register;
