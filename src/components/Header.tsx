@@ -1,14 +1,46 @@
 
-import { ShoppingCart, Search, Menu, User } from "lucide-react";
+import { ShoppingCart, Search, Menu, User, LogOut } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
-import { useState } from "react";
-import { Link } from "react-router-dom";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import { useState, useEffect } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { useToast } from "@/hooks/use-toast";
 
 export const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [userEmail, setUserEmail] = useState("");
   const cartItemsCount = 3; // This would come from cart state in a real app
+  const navigate = useNavigate();
+  const { toast } = useToast();
+
+  useEffect(() => {
+    const checkLoginStatus = () => {
+      const loginStatus = localStorage.getItem("isLoggedIn");
+      const email = localStorage.getItem("userEmail");
+      setIsLoggedIn(loginStatus === "true");
+      setUserEmail(email || "");
+    };
+
+    checkLoginStatus();
+    // Listen for storage changes (when user logs in from another tab)
+    window.addEventListener("storage", checkLoginStatus);
+    return () => window.removeEventListener("storage", checkLoginStatus);
+  }, []);
+
+  const handleLogout = () => {
+    localStorage.removeItem("isLoggedIn");
+    localStorage.removeItem("userEmail");
+    setIsLoggedIn(false);
+    setUserEmail("");
+    toast({
+      title: "Logout Berhasil",
+      description: "Anda telah keluar dari akun",
+    });
+    navigate("/");
+  };
 
   return (
     <header className="bg-white shadow-lg sticky top-0 z-50">
@@ -48,9 +80,38 @@ export const Header = () => {
               </Button>
             </div>
             
-            <Button variant="ghost" size="sm">
-              <User className="h-5 w-5" />
-            </Button>
+            {isLoggedIn ? (
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="ghost" size="sm" className="flex items-center space-x-2">
+                    <User className="h-5 w-5" />
+                    <span className="hidden md:block text-sm font-medium">
+                      {userEmail.split('@')[0]}
+                    </span>
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="w-56 bg-white border shadow-lg">
+                  <DropdownMenuItem asChild>
+                    <Link to="/profile" className="flex items-center space-x-2 cursor-pointer">
+                      <User className="h-4 w-4" />
+                      <span>Profil Saya</span>
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem onClick={handleLogout} className="flex items-center space-x-2 cursor-pointer text-red-600">
+                    <LogOut className="h-4 w-4" />
+                    <span>Logout</span>
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            ) : (
+              <Link to="/login">
+                <Button variant="ghost" size="sm">
+                  <User className="h-5 w-5" />
+                  <span className="hidden md:block ml-2">Login</span>
+                </Button>
+              </Link>
+            )}
             
             <Link to="/cart">
               <Button variant="ghost" size="sm" className="relative">
@@ -92,6 +153,16 @@ export const Header = () => {
               <Link to="/about" className="text-gray-700 hover:text-blue-600 transition-colors py-2">
                 About
               </Link>
+              {isLoggedIn && (
+                <>
+                  <Link to="/profile" className="text-gray-700 hover:text-blue-600 transition-colors py-2">
+                    Profil Saya
+                  </Link>
+                  <button onClick={handleLogout} className="text-red-600 hover:text-red-700 transition-colors py-2 text-left">
+                    Logout
+                  </button>
+                </>
+              )}
             </nav>
           </div>
         )}
