@@ -53,7 +53,7 @@ const About = () => {
       {/* Hero Section */}
       <section className="py-20 bg-gradient-to-r from-blue-600 to-purple-600 text-white">
         <div className="container mx-auto px-4 text-center">
-          <h1 className="text-5xl font-bold mb-6">About EliteShop</h1>
+          <h1 className="text-5xl font-bold mb-6">About Gentle Living</h1>
           <p className="text-xl max-w-3xl mx-auto leading-relaxed">
             We're more than just an e-commerce platform. We're your trusted partner in 
             discovering quality products that enhance your lifestyle and bring joy to your everyday moments.
@@ -71,7 +71,7 @@ const About = () => {
                 Building Tomorrow's Shopping Experience
               </h2>
               <p className="text-lg text-gray-600 mb-6 leading-relaxed">
-                Founded in 2020, EliteShop emerged from a simple vision: to create an online 
+                Founded in 2020, GentleLiving emerged from a simple vision: to create an online 
                 shopping experience that combines convenience, quality, and exceptional service. 
                 What started as a small team's dream has grown into a platform trusted by millions.
               </p>
@@ -99,7 +99,7 @@ const About = () => {
       <section className="py-20 bg-white/50">
         <div className="container mx-auto px-4">
           <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold text-gray-900 mb-4">Why Choose EliteShop?</h2>
+            <h2 className="text-4xl font-bold text-gray-900 mb-4">Why Choose GentleLiving?</h2>
             <p className="text-xl text-gray-600 max-w-2xl mx-auto">
               We're committed to providing you with the best shopping experience possible
             </p>
