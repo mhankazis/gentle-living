@@ -4,6 +4,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\TransactionController;
 use App\Http\Controllers\InvoiceController;
+use App\Http\Controllers\OrderController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -27,6 +28,9 @@ Route::middleware('auth')->group(function () {
     
     // Invoice routes
     Route::resource('invoices', InvoiceController::class);
+    
+    // Order routes - Pemesanan Produk
+    Route::resource('orders', OrderController::class);
 });
 
 require __DIR__.'/auth.php';

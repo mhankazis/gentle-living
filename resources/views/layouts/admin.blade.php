@@ -50,8 +50,8 @@
                     </a>
                     
                     <!-- Pemesanan Produk -->
-                    <a href="#" 
-                       class="flex items-center px-4 py-3 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors duration-200">
+                    <a href="{{ route('orders.index') }}" 
+                       class="flex items-center px-4 py-3 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors duration-200 {{ request()->routeIs('orders.*') ? 'bg-gray-200 text-gray-900' : '' }}">
                         <i class="fas fa-clipboard-list mr-3"></i>
                         <span>Pemesanan Produk</span>
                     </a>
