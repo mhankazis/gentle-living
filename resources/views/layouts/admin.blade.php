@@ -43,8 +43,8 @@
                     </a>
                     
                     <!-- Data Transaksi -->
-                    <a href="#" 
-                       class="flex items-center px-4 py-3 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors duration-200">
+                    <a href="{{ route('transactions.index') }}" 
+                       class="flex items-center px-4 py-3 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors duration-200 {{ request()->routeIs('transactions.*') ? 'bg-gray-200 text-gray-900' : '' }}">
                         <i class="fas fa-exchange-alt mr-3"></i>
                         <span>Data Transaksi</span>
                     </a>
@@ -71,8 +71,8 @@
                     </a>
                     
                     <!-- Data Invoice -->
-                    <a href="#" 
-                       class="flex items-center px-4 py-3 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors duration-200">
+                    <a href="{{ route('invoices.index') }}" 
+                       class="flex items-center px-4 py-3 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors duration-200 {{ request()->routeIs('invoices.*') ? 'bg-gray-200 text-gray-900' : '' }}">
                         <i class="fas fa-file-invoice mr-3"></i>
                         <span>Data Invoice</span>
                     </a>
