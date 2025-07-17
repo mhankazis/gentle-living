@@ -5,6 +5,8 @@ use App\Http\Controllers\ProductController;
 use App\Http\Controllers\TransactionController;
 use App\Http\Controllers\InvoiceController;
 use App\Http\Controllers\OrderController;
+use App\Http\Controllers\CompanyController;
+use App\Http\Controllers\AdminController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -31,6 +33,12 @@ Route::middleware('auth')->group(function () {
     
     // Order routes - Pemesanan Produk
     Route::resource('orders', OrderController::class);
+    
+    // Company routes - Data Perusahaan
+    Route::resource('companies', CompanyController::class);
+    
+    // Admin routes - Data Admin
+    Route::resource('admins', AdminController::class);
 });
 
 require __DIR__.'/auth.php';

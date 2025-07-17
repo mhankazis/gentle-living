@@ -57,15 +57,15 @@
                     </a>
                     
                     <!-- Data Perusahaan -->
-                    <a href="#" 
-                       class="flex items-center px-4 py-3 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors duration-200">
+                    <a href="{{ route('companies.index') }}" 
+                       class="flex items-center px-4 py-3 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors duration-200 {{ request()->routeIs('companies.*') ? 'bg-gray-200 text-gray-900' : '' }}">
                         <i class="fas fa-building mr-3"></i>
                         <span>Data Perusahaan</span>
                     </a>
                     
                     <!-- Data Admin -->
-                    <a href="#" 
-                       class="flex items-center px-4 py-3 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors duration-200">
+                    <a href="{{ route('admins.index') }}" 
+                       class="flex items-center px-4 py-3 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors duration-200 {{ request()->routeIs('admins.*') ? 'bg-gray-200 text-gray-900' : '' }}">
                         <i class="fas fa-users-cog mr-3"></i>
                         <span>Data Admin</span>
                     </a>
