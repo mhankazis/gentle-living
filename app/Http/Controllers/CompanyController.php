@@ -18,10 +18,9 @@ class CompanyController extends Controller
         if ($request->has('search') && $request->search) {
             $search = $request->search;
             $query->where(function($q) use ($search) {
-                $q->where('name', 'like', "%{$search}%")
-                  ->orWhere('owner_name', 'like', "%{$search}%")
-                  ->orWhere('email', 'like', "%{$search}%")
-                  ->orWhere('address', 'like', "%{$search}%");
+                $q->where('name_company', 'like', "%{$search}%")
+                  ->orWhere('phone_company', 'like', "%{$search}%")
+                  ->orWhere('address_company', 'like', "%{$search}%");
             });
         }
 
@@ -44,11 +43,9 @@ class CompanyController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'name' => 'required|string|max:255',
-            'owner_name' => 'required|string|max:255',
-            'address' => 'required|string',
-            'phone' => 'nullable|string|max:20',
-            'email' => 'nullable|email|max:255',
+            'name_company' => 'required|string|max:255',
+            'address_company' => 'required|string',
+            'phone_company' => 'nullable|string|max:20',
         ]);
 
         Company::create($request->all());
@@ -79,11 +76,9 @@ class CompanyController extends Controller
     public function update(Request $request, Company $company)
     {
         $request->validate([
-            'name' => 'required|string|max:255',
-            'owner_name' => 'required|string|max:255',
-            'address' => 'required|string',
-            'phone' => 'nullable|string|max:20',
-            'email' => 'nullable|email|max:255',
+            'name_company' => 'required|string|max:255',
+            'address_company' => 'required|string',
+            'phone_company' => 'nullable|string|max:20',
         ]);
 
         $company->update($request->all());

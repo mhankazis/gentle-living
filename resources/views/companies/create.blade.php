@@ -32,77 +32,46 @@
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <!-- Company Name -->
                         <div>
-                            <label for="name" class="block text-sm font-medium text-gray-700 mb-2">
+                            <label for="name_company" class="block text-sm font-medium text-gray-700 mb-2">
                                 Nama Perusahaan <span class="text-red-500">*</span>
                             </label>
                             <input type="text" 
-                                   id="name" 
-                                   name="name" 
-                                   value="{{ old('name') }}"
+                                   id="name_company" 
+                                   name="name_company" 
+                                   value="{{ old('name_company') }}"
                                    required
-                                   class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 @error('name') border-red-500 @enderror">
-                            @error('name')
-                                <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                            @enderror
-                        </div>
-
-                        <!-- Owner Name -->
-                        <div>
-                            <label for="owner_name" class="block text-sm font-medium text-gray-700 mb-2">
-                                Nama Pemilik <span class="text-red-500">*</span>
-                            </label>
-                            <input type="text" 
-                                   id="owner_name" 
-                                   name="owner_name" 
-                                   value="{{ old('owner_name') }}"
-                                   required
-                                   class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 @error('owner_name') border-red-500 @enderror">
-                            @error('owner_name')
-                                <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                            @enderror
-                        </div>
-
-                        <!-- Email -->
-                        <div>
-                            <label for="email" class="block text-sm font-medium text-gray-700 mb-2">
-                                Email
-                            </label>
-                            <input type="email" 
-                                   id="email" 
-                                   name="email" 
-                                   value="{{ old('email') }}"
-                                   class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 @error('email') border-red-500 @enderror">
-                            @error('email')
+                                   class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 @error('name_company') border-red-500 @enderror">
+                            @error('name_company')
                                 <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                             @enderror
                         </div>
 
                         <!-- Phone -->
                         <div>
-                            <label for="phone" class="block text-sm font-medium text-gray-700 mb-2">
+                            <label for="phone_company" class="block text-sm font-medium text-gray-700 mb-2">
                                 Nomor Telepon
                             </label>
                             <input type="text" 
-                                   id="phone" 
-                                   name="phone" 
-                                   value="{{ old('phone') }}"
-                                   class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 @error('phone') border-red-500 @enderror">
-                            @error('phone')
+                                   id="phone_company" 
+                                   name="phone_company" 
+                                   value="{{ old('phone_company') }}"
+                                   class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 @error('phone_company') border-red-500 @enderror">
+                            @error('phone_company')
                                 <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                             @enderror
                         </div>
 
                         <!-- Address -->
                         <div class="md:col-span-2">
-                            <label for="address" class="block text-sm font-medium text-gray-700 mb-2">
+                            <label for="address_company" class="block text-sm font-medium text-gray-700 mb-2">
                                 Alamat <span class="text-red-500">*</span>
                             </label>
-                            <textarea id="address" 
-                                      name="address" 
+                            <textarea id="address_company" 
+                                      name="address_company" 
                                       rows="3"
                                       required
-                                      class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 @error('address') border-red-500 @enderror">{{ old('address') }}</textarea>
-                            @error('address')
+                                      class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 @error('address_company') border-red-500 @enderror">{{ old('address_company') }}</textarea>
+                            @error('address_company')
                                 <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                             @enderror
                         </div>

@@ -25,6 +25,16 @@ class Company extends Model
     protected $primaryKey = 'company_id';
 
     /**
+     * Get the route key for the model.
+     *
+     * @return string
+     */
+    public function getRouteKeyName()
+    {
+        return 'company_id';
+    }
+
+    /**
      * The attributes that are mass assignable.
      *
      * @var array
