@@ -2,10 +2,14 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
-class Product extends Model
+class Item extends Model
 {
+    use HasFactory, SoftDeletes;
+
     /**
      * The table associated with the model.
      *
@@ -20,6 +24,11 @@ class Product extends Model
      */
     protected $primaryKey = 'item_id';
 
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var array
+     */
     protected $fillable = [
         'category_id',
         'name_item',
@@ -30,45 +39,12 @@ class Product extends Model
         'costprice_item',
     ];
 
-    protected $casts = [
-        'costprice_item' => 'decimal:2',
-    ];
-
-    // Accessor for backward compatibility
-    public function getNameAttribute()
-    {
-        return $this->name_item;
-    }
-
-    public function getDescriptionAttribute()
-    {
-        return $this->description_item;
-    }
-
-    public function getPriceAttribute()
-    {
-        return $this->costprice_item;
-    }
-
-    public function getStockAttribute()
-    {
-        // Return total stock across all branches
-        return $this->branchStocks()->sum('stock');
-    }
-
-    public function getIsActiveAttribute()
-    {
-        return true; // Default to active since the new database doesn't have this field
-    }
-
+    /**
+     * Get the category that owns the item.
+     */
     public function category()
     {
         return $this->belongsTo(Category::class, 'category_id', 'category_id');
-    }
-
-    public function orderItems()
-    {
-        return $this->hasMany(OrderItem::class, 'product_id', 'item_id');
     }
 
     /**

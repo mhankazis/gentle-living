@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class Category extends Model
+class CustomerType extends Model
 {
     use HasFactory, SoftDeletes;
 
@@ -15,14 +15,14 @@ class Category extends Model
      *
      * @var string
      */
-    protected $table = 'master_categories';
+    protected $table = 'master_customers_types';
 
     /**
      * The primary key for the model.
      *
      * @var string
      */
-    protected $primaryKey = 'category_id';
+    protected $primaryKey = 'customer_type_id';
 
     /**
      * The attributes that are mass assignable.
@@ -30,22 +30,22 @@ class Category extends Model
      * @var array
      */
     protected $fillable = [
-        'name_category',
+        'name_customer_type',
     ];
 
     /**
-     * Get the items for the category.
+     * Get the customers of this type.
      */
-    public function items()
+    public function customers()
     {
-        return $this->hasMany(Item::class, 'category_id', 'category_id');
+        return $this->hasMany(Customer::class, 'customer_type_id', 'customer_type_id');
     }
 
     /**
-     * Get the products for the category (keeping backward compatibility).
+     * Get the item details (pricing) for this customer type.
      */
-    public function products()
+    public function itemDetails()
     {
-        return $this->hasMany(Product::class, 'category_id', 'category_id');
+        return $this->hasMany(ItemDetail::class, 'customer_type_id', 'customer_type_id');
     }
 }

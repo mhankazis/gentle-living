@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class Category extends Model
+class Inventory extends Model
 {
     use HasFactory, SoftDeletes;
 
@@ -15,14 +15,14 @@ class Category extends Model
      *
      * @var string
      */
-    protected $table = 'master_categories';
+    protected $table = 'master_inventories';
 
     /**
      * The primary key for the model.
      *
      * @var string
      */
-    protected $primaryKey = 'category_id';
+    protected $primaryKey = 'inventory_id';
 
     /**
      * The attributes that are mass assignable.
@@ -30,22 +30,15 @@ class Category extends Model
      * @var array
      */
     protected $fillable = [
-        'name_category',
+        'company_id',
+        'name_inventory',
     ];
 
     /**
-     * Get the items for the category.
+     * Get the company that owns the inventory.
      */
-    public function items()
+    public function company()
     {
-        return $this->hasMany(Item::class, 'category_id', 'category_id');
-    }
-
-    /**
-     * Get the products for the category (keeping backward compatibility).
-     */
-    public function products()
-    {
-        return $this->hasMany(Product::class, 'category_id', 'category_id');
+        return $this->belongsTo(Company::class, 'company_id', 'company_id');
     }
 }
