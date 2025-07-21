@@ -3,6 +3,7 @@
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\TransactionController;
+use App\Http\Controllers\SalesTransactionController;
 use App\Http\Controllers\InvoiceController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\CompanyController;
@@ -30,6 +31,10 @@ Route::middleware('auth')->group(function () {
     
     // Invoice routes
     Route::resource('invoices', InvoiceController::class);
+    
+    // Transaction routes - Data Transaksi
+    Route::resource('transactions', SalesTransactionController::class);
+    Route::get('transactions/{id}/invoice', [SalesTransactionController::class, 'invoice'])->name('transactions.invoice');
     
     // Order routes - Pemesanan Produk
     Route::resource('orders', OrderController::class);

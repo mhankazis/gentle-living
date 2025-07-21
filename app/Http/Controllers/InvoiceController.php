@@ -12,23 +12,31 @@ class InvoiceController extends Controller
      */
     public function index(Request $request)
     {
-        $query = Invoice::with('user');
+        $query = Invoice::with(['user', 'customer', 'paymentMethod']);
 
         // Handle search filters
         if ($request->has('kode_invoice') && $request->kode_invoice) {
-            $query->where('invoice_number', 'like', "%{$request->kode_invoice}%");
+            $query->where('number', 'like', "%{$request->kode_invoice}%");
         }
 
         if ($request->has('status_pelunasan') && $request->status_pelunasan && $request->status_pelunasan !== 'semua') {
-            $query->where('status', $request->status_pelunasan);
+            if ($request->status_pelunasan === 'paid') {
+                $query->whereRaw('paid_amount >= total_amount');
+            } else {
+                $query->whereRaw('paid_amount < total_amount');
+            }
         }
 
         if ($request->has('status_dp') && $request->status_dp && $request->status_dp !== 'semua') {
-            // For DP status, we'll use a different logic since the existing table doesn't have DP fields
-            // We'll simulate this for the interface
+            // For DP status, check if payment is partial
+            if ($request->status_dp === 'ada_dp') {
+                $query->whereRaw('paid_amount > 0 AND paid_amount < total_amount');
+            } else {
+                $query->whereRaw('paid_amount = 0 OR paid_amount >= total_amount');
+            }
         }
 
-        $invoices = $query->orderBy('created_at', 'desc')->paginate(10);
+        $invoices = $query->orderBy('date', 'desc')->paginate(10);
         
         return view('invoices.index', compact('invoices'));
     }
@@ -38,7 +46,8 @@ class InvoiceController extends Controller
      */
     public function create()
     {
-        return view('invoices.create');
+        // Redirect to transactions since we don't create invoices directly
+        return redirect()->route('transactions.index')->with('info', 'Invoices are automatically created from transactions.');
     }
 
     /**
@@ -46,16 +55,8 @@ class InvoiceController extends Controller
      */
     public function store(Request $request)
     {
-        $validated = $request->validate([
-            'invoice_number' => 'required|string|unique:invoices',
-            'amount' => 'required|numeric|min:0',
-            'status' => 'required|in:paid,unpaid,partial',
-            'due_date' => 'required|date',
-            'user_id' => 'required|exists:users,id'
-        ]);
-
-        Invoice::create($validated);
-        return redirect()->route('invoices.index')->with('success', 'Invoice created successfully!');
+        // Invoices are created through transactions, so redirect
+        return redirect()->route('transactions.index')->with('info', 'Invoices are automatically created from transactions.');
     }
 
     /**
@@ -63,8 +64,8 @@ class InvoiceController extends Controller
      */
     public function show(string $id)
     {
-        $invoice = Invoice::with('user')->findOrFail($id);
-        return view('invoices.show', compact('invoice'));
+        $invoice = Invoice::with(['user', 'customer', 'details.item', 'paymentMethod', 'salesType'])->findOrFail($id);
+        return view('transactions.invoice', compact('transaction'), ['transaction' => $invoice]);
     }
 
     /**
@@ -72,8 +73,8 @@ class InvoiceController extends Controller
      */
     public function edit(string $id)
     {
-        $invoice = Invoice::findOrFail($id);
-        return view('invoices.edit', compact('invoice'));
+        // Redirect to transactions since we don't edit invoices directly
+        return redirect()->route('transactions.index')->with('info', 'Edit transactions to modify invoice data.');
     }
 
     /**
@@ -81,18 +82,8 @@ class InvoiceController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        $invoice = Invoice::findOrFail($id);
-        
-        $validated = $request->validate([
-            'invoice_number' => 'required|string|unique:invoices,invoice_number,' . $id,
-            'amount' => 'required|numeric|min:0',
-            'status' => 'required|in:paid,unpaid,partial',
-            'due_date' => 'required|date',
-            'user_id' => 'required|exists:users,id'
-        ]);
-
-        $invoice->update($validated);
-        return redirect()->route('invoices.index')->with('success', 'Invoice updated successfully!');
+        // Redirect to transactions since we don't update invoices directly
+        return redirect()->route('transactions.index')->with('info', 'Update transactions to modify invoice data.');
     }
 
     /**
@@ -100,8 +91,7 @@ class InvoiceController extends Controller
      */
     public function destroy(string $id)
     {
-        $invoice = Invoice::findOrFail($id);
-        $invoice->delete();
-        return redirect()->route('invoices.index')->with('success', 'Invoice deleted successfully!');
+        // Redirect to transactions since we don't delete invoices directly
+        return redirect()->route('transactions.index')->with('info', 'Delete transactions to remove invoice data.');
     }
 }

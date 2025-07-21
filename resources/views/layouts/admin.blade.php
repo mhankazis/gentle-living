@@ -63,6 +63,13 @@
                         <span>Data Perusahaan</span>
                     </a>
                     
+                    <!-- Data Transaksi -->
+                    <a href="{{ route('transactions.index') }}" 
+                       class="flex items-center px-4 py-3 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors duration-200 {{ request()->routeIs('transactions.*') ? 'bg-gray-200 text-gray-900' : '' }}">
+                        <i class="fas fa-receipt mr-3"></i>
+                        <span>Data Transaksi</span>
+                    </a>
+                    
                     <!-- Data Admin -->
                     <a href="{{ route('admins.index') }}" 
                        class="flex items-center px-4 py-3 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors duration-200 {{ request()->routeIs('admins.*') ? 'bg-gray-200 text-gray-900' : '' }}">

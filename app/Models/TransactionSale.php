@@ -2,16 +2,16 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class Invoice extends Model
+class TransactionSale extends Model
 {
-    use SoftDeletes;
+    use HasFactory, SoftDeletes;
 
     /**
      * The table associated with the model.
-     * We use transaction_sales as the base for invoices
      *
      * @var string
      */
@@ -24,6 +24,11 @@ class Invoice extends Model
      */
     protected $primaryKey = 'transaction_sales_id';
 
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var array
+     */
     protected $fillable = [
         'branch_id',
         'payment_method_id',
@@ -42,6 +47,11 @@ class Invoice extends Model
         'whatsapp',
     ];
 
+    /**
+     * The attributes that should be cast.
+     *
+     * @var array
+     */
     protected $casts = [
         'date' => 'datetime',
         'subtotal' => 'decimal:2',
@@ -52,57 +62,49 @@ class Invoice extends Model
         'change_amount' => 'decimal:2',
     ];
 
-    // Accessors for backward compatibility with existing Invoice views
-    public function getInvoiceNumberAttribute()
-    {
-        return $this->number;
-    }
-
-    public function getAmountAttribute()
-    {
-        return $this->total_amount;
-    }
-
-    public function getStatusAttribute()
-    {
-        return $this->paid_amount >= $this->total_amount ? 'paid' : 'unpaid';
-    }
-
-    public function getDueDateAttribute()
-    {
-        return $this->date->addDays(30); // Default 30 days payment term
-    }
-
-    public function getPaidAtAttribute()
-    {
-        return $this->paid_amount >= $this->total_amount ? $this->updated_at : null;
-    }
-
-    public function user()
-    {
-        return $this->belongsTo(User::class, 'user_id', 'user_id');
-    }
-
-    public function customer()
-    {
-        return $this->belongsTo(Customer::class, 'customer_id', 'customer_id');
-    }
-
+    /**
+     * Get the branch for this transaction.
+     */
     public function branch()
     {
         return $this->belongsTo(Branch::class, 'branch_id', 'branch_id');
     }
 
+    /**
+     * Get the payment method for this transaction.
+     */
     public function paymentMethod()
     {
         return $this->belongsTo(PaymentMethod::class, 'payment_method_id', 'payment_method_id');
     }
 
+    /**
+     * Get the user (cashier) for this transaction.
+     */
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'user_id', 'user_id');
+    }
+
+    /**
+     * Get the customer for this transaction.
+     */
+    public function customer()
+    {
+        return $this->belongsTo(Customer::class, 'customer_id', 'customer_id');
+    }
+
+    /**
+     * Get the sales type for this transaction.
+     */
     public function salesType()
     {
         return $this->belongsTo(SalesType::class, 'sales_type_id', 'sales_type_id');
     }
 
+    /**
+     * Get the transaction details (items).
+     */
     public function details()
     {
         return $this->hasMany(TransactionSaleDetail::class, 'transaction_sales_id', 'transaction_sales_id');
