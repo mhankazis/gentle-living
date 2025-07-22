@@ -24,7 +24,7 @@
                             <i class="fas fa-file-invoice-dollar mr-2"></i>
                             <span class="text-sm font-medium">Total Invoice Terbayar</span>
                         </div>
-                        <div class="text-3xl font-bold">Rp0</div>
+                        <div class="text-3xl font-bold">Rp {{ number_format($totalPaidInvoices, 0, ',', '.') }}</div>
                     </div>
                 </div>
                 <div class="absolute -right-4 -bottom-4 opacity-20">
@@ -40,7 +40,7 @@
                             <i class="fas fa-exclamation-circle mr-2"></i>
                             <span class="text-sm font-medium">Total Invoice Belum Terbayar</span>
                         </div>
-                        <div class="text-3xl font-bold">Rp12.979.000</div>
+                        <div class="text-3xl font-bold">Rp {{ number_format($totalUnpaidInvoices, 0, ',', '.') }}</div>
                     </div>
                 </div>
                 <div class="absolute -right-4 -bottom-4 opacity-20">
@@ -56,7 +56,7 @@
                             <i class="fas fa-shopping-cart mr-2"></i>
                             <span class="text-sm font-medium">Pesanan Belum Diproses</span>
                         </div>
-                        <div class="text-3xl font-bold">0</div>
+                        <div class="text-3xl font-bold">{{ $pendingOrders }}</div>
                     </div>
                 </div>
                 <div class="absolute -right-4 -bottom-4 opacity-20">
@@ -83,36 +83,20 @@
                             </tr>
                         </thead>
                         <tbody class="bg-white divide-y divide-gray-200">
+                            @forelse($topProducts as $product)
                             <tr>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">1</td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">Gimme Food (GF)</td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">23</td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">Rp529.000</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ $product->rank }}</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ $product->name }}</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ $product->total_qty }}</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">Rp {{ number_format($product->total_value, 0, ',', '.') }}</td>
                             </tr>
+                            @empty
                             <tr>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">2</td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">Massage Your Baby (MYB)</td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">20</td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">Rp460.000</td>
+                                <td colspan="4" class="px-6 py-8 text-center text-gray-500">
+                                    Tidak ada data produk
+                                </td>
                             </tr>
-                            <tr>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">3</td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">LDR (15ml)</td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">14</td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">Rp322.000</td>
-                            </tr>
-                            <tr>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">4</td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">Organic Gentle (OG)</td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">13</td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">Rp299.000</td>
-                            </tr>
-                            <tr>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">5</td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">Baby Calmer (BC)</td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">12</td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">Rp276.000</td>
-                            </tr>
+                            @endforelse
                         </tbody>
                     </table>
                 </div>
@@ -134,36 +118,20 @@
                             </tr>
                         </thead>
                         <tbody class="bg-white divide-y divide-gray-200">
+                            @forelse($bottomProducts as $product)
                             <tr>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">1</td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">Gimme Food (GF)</td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">1</td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">Rp40.000</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ $product->rank }}</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ $product->name }}</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ $product->total_qty }}</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">Rp {{ number_format($product->total_value, 0, ',', '.') }}</td>
                             </tr>
+                            @empty
                             <tr>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">2</td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">Tummy Calmer (TC)</td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">13</td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">Rp299.000</td>
+                                <td colspan="4" class="px-6 py-8 text-center text-gray-500">
+                                    Tidak ada data produk
+                                </td>
                             </tr>
-                            <tr>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">3</td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">LDR (15ml)</td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">14</td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">Rp322.000</td>
-                            </tr>
-                            <tr>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">4</td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">Massage Your Baby (MYB)</td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">22</td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">Rp506.000</td>
-                            </tr>
-                            <tr>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">5</td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">Gentle Calmer (GC)</td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">1</td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">Rp23.000</td>
-                            </tr>
+                            @endforelse
                         </tbody>
                     </table>
                 </div>
@@ -207,22 +175,53 @@
                                 <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Sub Total</th>
                             </tr>
                         </thead>
-                        <tbody class="bg-white">
+                        <tbody class="bg-white divide-y divide-gray-200">
+                            @forelse($pendingOrdersList as $order)
+                                @foreach($order['items'] as $index => $item)
+                                <tr>
+                                    @if($index === 0)
+                                        <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-900" rowspan="{{ count($order['items']) }}">{{ $order['no'] }}</td>
+                                        <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-900" rowspan="{{ count($order['items']) }}">{{ $order['date'] }}</td>
+                                        <td class="px-4 py-4 whitespace-nowrap text-sm text-blue-600 font-medium" rowspan="{{ count($order['items']) }}">{{ $order['number'] }}</td>
+                                        <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-900" rowspan="{{ count($order['items']) }}">{{ $order['customer'] }}</td>
+                                    @endif
+                                    <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-900">{{ $item['name'] }}</td>
+                                    @if($index === 0)
+                                        <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-900" rowspan="{{ count($order['items']) }}">
+                                            <span class="px-2 py-1 text-xs font-medium bg-yellow-100 text-yellow-800 rounded-full">
+                                                {{ $order['status'] }}
+                                            </span>
+                                        </td>
+                                    @endif
+                                    <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-900">{{ $item['qty'] }}</td>
+                                    <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-900">Rp {{ number_format($item['subtotal'], 0, ',', '.') }}</td>
+                                </tr>
+                                @endforeach
+                            @empty
                             <tr>
                                 <td colspan="8" class="text-center py-12 text-gray-500">
-                                    No data available in table
+                                    <div class="flex flex-col items-center justify-center">
+                                        <i class="fas fa-clipboard-list text-4xl text-gray-300 mb-4"></i>
+                                        <p>Tidak ada pesanan yang belum diproses</p>
+                                    </div>
                                 </td>
                             </tr>
+                            @endforelse
                         </tbody>
                     </table>
                 </div>
                 
                 <!-- Pagination Info -->
                 <div class="flex justify-between items-center mt-4 text-sm text-gray-600">
-                    <div>Showing 0 to 0 of 0 entries</div>
+                    <div>Showing {{ count($pendingOrdersList) > 0 ? '1' : '0' }} to {{ count($pendingOrdersList) }} of {{ count($pendingOrdersList) }} entries</div>
                     <div class="flex space-x-2">
-                        <button class="px-3 py-1 border border-gray-300 rounded text-gray-500 cursor-not-allowed">Previous</button>
-                        <button class="px-3 py-1 border border-gray-300 rounded text-gray-500 cursor-not-allowed">Next</button>
+                        @if(count($pendingOrdersList) > 10)
+                            <button class="px-3 py-1 border border-gray-300 rounded text-gray-700 hover:bg-gray-50">Previous</button>
+                            <button class="px-3 py-1 border border-gray-300 rounded text-gray-700 hover:bg-gray-50">Next</button>
+                        @else
+                            <button class="px-3 py-1 border border-gray-300 rounded text-gray-500 cursor-not-allowed">Previous</button>
+                            <button class="px-3 py-1 border border-gray-300 rounded text-gray-500 cursor-not-allowed">Next</button>
+                        @endif
                     </div>
                 </div>
             </div>
