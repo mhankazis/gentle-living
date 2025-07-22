@@ -230,7 +230,7 @@
         <!-- Feature Cards Section -->
         <div class="mt-12 grid grid-cols-1 md:grid-cols-2 gap-8">
             <!-- Data Produk -->
-            <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-8 hover:shadow-md transition-shadow duration-200">
+            <a href="{{ route('products.index') }}" class="block bg-white rounded-xl shadow-sm border border-gray-200 p-8 hover:shadow-md transition-shadow duration-200 cursor-pointer">
                 <div class="flex items-start justify-between">
                     <div class="flex-1">
                         <h3 class="text-xl font-bold text-gray-900 mb-3">Data Produk</h3>
@@ -244,10 +244,10 @@
                         </div>
                     </div>
                 </div>
-            </div>
+            </a>
 
             <!-- Data Transaksi -->
-            <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-8 hover:shadow-md transition-shadow duration-200">
+            <a href="{{ route('transactions.index') }}" class="block bg-white rounded-xl shadow-sm border border-gray-200 p-8 hover:shadow-md transition-shadow duration-200 cursor-pointer">
                 <div class="flex items-start justify-between">
                     <div class="flex-1">
                         <h3 class="text-xl font-bold text-gray-900 mb-3">Data Transaksi</h3>
@@ -261,10 +261,10 @@
                         </div>
                     </div>
                 </div>
-            </div>
+            </a>
 
             <!-- Pemesanan Produk -->
-            <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-8 hover:shadow-md transition-shadow duration-200">
+            <a href="{{ route('orders.index') }}" class="block bg-white rounded-xl shadow-sm border border-gray-200 p-8 hover:shadow-md transition-shadow duration-200 cursor-pointer">
                 <div class="flex items-start justify-between">
                     <div class="flex-1">
                         <h3 class="text-xl font-bold text-gray-900 mb-3">Pemesanan Produk</h3>
@@ -278,10 +278,10 @@
                         </div>
                     </div>
                 </div>
-            </div>
+            </a>
 
             <!-- Data Pelanggan -->
-            <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-8 hover:shadow-md transition-shadow duration-200">
+            <a href="{{ route('companies.index') }}" class="block bg-white rounded-xl shadow-sm border border-gray-200 p-8 hover:shadow-md transition-shadow duration-200 cursor-pointer">
                 <div class="flex items-start justify-between">
                     <div class="flex-1">
                         <h3 class="text-xl font-bold text-gray-900 mb-3">Data Pelanggan</h3>
@@ -295,10 +295,10 @@
                         </div>
                     </div>
                 </div>
-            </div>
+            </a>
 
             <!-- Data Admin -->
-            <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-8 hover:shadow-md transition-shadow duration-200">
+            <a href="{{ route('admins.index') }}" class="block bg-white rounded-xl shadow-sm border border-gray-200 p-8 hover:shadow-md transition-shadow duration-200 cursor-pointer">
                 <div class="flex items-start justify-between">
                     <div class="flex-1">
                         <h3 class="text-xl font-bold text-gray-900 mb-3">Data Admin</h3>
@@ -312,10 +312,10 @@
                         </div>
                     </div>
                 </div>
-            </div>
+            </a>
 
             <!-- Data Invoice -->
-            <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-8 hover:shadow-md transition-shadow duration-200">
+            <a href="{{ route('invoices.index') }}" class="block bg-white rounded-xl shadow-sm border border-gray-200 p-8 hover:shadow-md transition-shadow duration-200 cursor-pointer">
                 <div class="flex items-start justify-between">
                     <div class="flex-1">
                         <h3 class="text-xl font-bold text-gray-900 mb-3">Data Invoice</h3>
@@ -329,7 +329,7 @@
                         </div>
                     </div>
                 </div>
-            </div>
+            </a>
         </div>
 
         <!-- Final Footer -->
