@@ -133,6 +133,31 @@
 
             <!-- Page Content -->
             <main class="flex-1 overflow-y-auto bg-gray-50">
+                <!-- Success/Error Messages -->
+                @if(session('success'))
+                    <div class="mx-6 mt-6 bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative" role="alert">
+                        <div class="flex items-center">
+                            <i class="fas fa-check-circle mr-2"></i>
+                            <span class="block sm:inline">{{ session('success') }}</span>
+                        </div>
+                        <span class="absolute top-0 bottom-0 right-0 px-4 py-3 cursor-pointer" onclick="this.parentElement.style.display='none'">
+                            <i class="fas fa-times"></i>
+                        </span>
+                    </div>
+                @endif
+
+                @if(session('error'))
+                    <div class="mx-6 mt-6 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
+                        <div class="flex items-center">
+                            <i class="fas fa-exclamation-circle mr-2"></i>
+                            <span class="block sm:inline">{{ session('error') }}</span>
+                        </div>
+                        <span class="absolute top-0 bottom-0 right-0 px-4 py-3 cursor-pointer" onclick="this.parentElement.style.display='none'">
+                            <i class="fas fa-times"></i>
+                        </span>
+                    </div>
+                @endif
+
                 {{ $slot }}
             </main>
         </div>

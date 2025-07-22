@@ -68,13 +68,13 @@ class ProductController extends Controller
         $product = Product::findOrFail($id);
         
         $validated = $request->validate([
-            'nama' => 'required|string|max:255',
-            'hpp' => 'required|numeric|min:0',
-            'price' => 'required|numeric|min:0',
-            'ukuran_volume' => 'required|string|max:255',
-            'is_cashback' => 'boolean',
-            'nilai_cashback' => 'nullable|numeric|min:0',
-            'status' => 'required|in:Active,Inactive'
+            'name_item' => 'required|string|max:255',
+            'description_item' => 'nullable|string',
+            'ingredient_item' => 'nullable|string',
+            'netweight_item' => 'nullable|string|max:100',
+            'contain_item' => 'nullable|string',
+            'costprice_item' => 'required|numeric|min:0',
+            'category_id' => 'nullable|integer'
         ]);
 
         $product->update($validated);
