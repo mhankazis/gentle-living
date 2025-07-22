@@ -17,6 +17,9 @@ Route::get('/', function () {
 
 Route::get('/dashboard', [DashboardController::class, 'index'])->middleware(['auth', 'verified'])->name('dashboard');
 
+// Debug route for invoice statistics (can be removed in production)
+Route::get('/dashboard/invoice-stats', [DashboardController::class, 'getInvoiceStats'])->middleware(['auth', 'verified'])->name('dashboard.invoice-stats');
+
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');

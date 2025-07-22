@@ -24,7 +24,10 @@
                             <i class="fas fa-file-invoice-dollar mr-2"></i>
                             <span class="text-sm font-medium">Total Invoice Terbayar</span>
                         </div>
-                        <div class="text-3xl font-bold">Rp {{ number_format($totalPaidInvoices, 0, ',', '.') }}</div>
+                        <div class="text-3xl font-bold">Rp {{ number_format($totalPaidInvoices ?? 0, 0, ',', '.') }}</div>
+                        <div class="text-xs text-purple-200 mt-1">
+                            Data dari transaksi yang sudah lunas
+                        </div>
                     </div>
                 </div>
                 <div class="absolute -right-4 -bottom-4 opacity-20">
@@ -40,7 +43,10 @@
                             <i class="fas fa-exclamation-circle mr-2"></i>
                             <span class="text-sm font-medium">Total Invoice Belum Terbayar</span>
                         </div>
-                        <div class="text-3xl font-bold">Rp {{ number_format($totalUnpaidInvoices, 0, ',', '.') }}</div>
+                        <div class="text-3xl font-bold">Rp {{ number_format($totalUnpaidInvoices ?? 0, 0, ',', '.') }}</div>
+                        <div class="text-xs text-pink-200 mt-1">
+                            Sisa tagihan yang belum dibayar
+                        </div>
                     </div>
                 </div>
                 <div class="absolute -right-4 -bottom-4 opacity-20">
@@ -49,20 +55,26 @@
             </div>
 
             <!-- Pesanan Belum Diproses -->
-            <div class="bg-gradient-to-r from-yellow-400 to-yellow-500 rounded-xl p-6 text-white relative overflow-hidden">
+            <a href="#pending-orders" class="block bg-gradient-to-r from-yellow-400 to-yellow-500 rounded-xl p-6 text-white relative overflow-hidden hover:from-yellow-500 hover:to-yellow-600 transition-all duration-200 cursor-pointer">
                 <div class="flex items-center justify-between">
                     <div>
                         <div class="flex items-center mb-2">
-                            <i class="fas fa-shopping-cart mr-2"></i>
-                            <span class="text-sm font-medium">Pesanan Belum Diproses</span>
+                            <i class="fas fa-clock mr-2"></i>
+                            <span class="text-sm font-medium">Pesanan Belum Selesai Diproses</span>
                         </div>
-                        <div class="text-3xl font-bold">{{ $pendingOrders }}</div>
+                        <div class="text-3xl font-bold">{{ count($pendingOrdersList ?? []) }}</div>
+                        <div class="text-xs text-yellow-200 mt-1">
+                            Transaksi yang belum lunas - Lihat detail di bawah
+                        </div>
+                    </div>
+                    <div class="text-yellow-200">
+                        <i class="fas fa-chevron-down text-xl"></i>
                     </div>
                 </div>
                 <div class="absolute -right-4 -bottom-4 opacity-20">
-                    <i class="fas fa-box text-6xl"></i>
+                    <i class="fas fa-hourglass-half text-6xl"></i>
                 </div>
-            </div>
+            </a>
         </div>
 
         <!-- Data Tables -->
@@ -139,9 +151,14 @@
         </div>
 
         <!-- Pending Orders Table -->
-        <div class="mt-8 bg-white rounded-xl shadow-sm border border-gray-200">
+        <div id="pending-orders" class="mt-8 bg-white rounded-xl shadow-sm border border-gray-200">
             <div class="p-6 border-b border-gray-200">
-                <h2 class="text-lg font-semibold text-gray-800">Daftar pesanan belum selesai diproses</h2>
+                <div class="flex items-center justify-between">
+                    <h2 class="text-lg font-semibold text-gray-800">Daftar pesanan belum selesai diproses</h2>
+                    <span class="px-3 py-1 bg-yellow-100 text-yellow-800 text-sm rounded-full font-medium">
+                        {{ count($pendingOrdersList ?? []) }} pesanan
+                    </span>
+                </div>
             </div>
             <div class="p-6">
                 <div class="flex justify-between items-center mb-4">
@@ -336,4 +353,30 @@
             Copyright ©2025, Gentle Baby
         </div>
     </div>
+
+    <!-- JavaScript for smooth scroll to pending orders -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Handle click on pending orders card
+            const pendingOrdersCard = document.querySelector('a[href="#pending-orders"]');
+            if (pendingOrdersCard) {
+                pendingOrdersCard.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const target = document.getElementById('pending-orders');
+                    if (target) {
+                        target.scrollIntoView({ 
+                            behavior: 'smooth',
+                            block: 'start'
+                        });
+                        
+                        // Add highlight effect
+                        target.classList.add('ring-4', 'ring-yellow-200');
+                        setTimeout(() => {
+                            target.classList.remove('ring-4', 'ring-yellow-200');
+                        }, 2000);
+                    }
+                });
+            }
+        });
+    </script>
 </x-admin-layout>

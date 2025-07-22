@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\TransactionSale;
 use App\Models\TransactionSaleDetail;
+use App\Models\Invoice;
 use Illuminate\Support\Facades\DB;
 
 class DashboardController extends Controller
@@ -12,11 +13,18 @@ class DashboardController extends Controller
     public function index()
     {
         try {
-            // Statistics
-            $totalPaidInvoices = TransactionSale::where('paid_amount', '>=', DB::raw('total_amount'))->sum('total_amount');
+            // Statistics - Calculate invoice totals based on payment status
+            // Paid invoices: where paid_amount >= total_amount
+            $totalPaidInvoices = TransactionSale::where('paid_amount', '>=', DB::raw('total_amount'))
+                ->sum('total_amount');
+            
+            // Unpaid invoices: sum of remaining unpaid amounts
             $totalUnpaidInvoices = TransactionSale::where('paid_amount', '<', DB::raw('total_amount'))
-                ->sum(DB::raw('total_amount - paid_amount'));
-            $pendingOrders = TransactionSale::where('paid_amount', '<', DB::raw('total_amount'))->count();
+                ->sum(DB::raw('total_amount - COALESCE(paid_amount, 0)'));
+            
+            // Count of pending orders (not fully paid) - consistent with the table below
+            $pendingOrders = TransactionSale::whereRaw('COALESCE(paid_amount, 0) < total_amount')
+                ->count();
 
             // Top 5 Products by quantity sold
             $topProducts = DB::table('transaction_sales_details as tsd')
@@ -54,7 +62,7 @@ class DashboardController extends Controller
 
             // Pending Orders (transactions that are not fully paid)
             $pendingOrdersList = TransactionSale::with(['customer', 'details.item'])
-                ->where('paid_amount', '<', DB::raw('total_amount'))
+                ->whereRaw('COALESCE(paid_amount, 0) < total_amount')
                 ->orderBy('date', 'desc')
                 ->limit(10)
                 ->get()
@@ -73,19 +81,40 @@ class DashboardController extends Controller
                         }),
                         'status' => 'Belum Lunas',
                         'total_amount' => $transaction->total_amount,
-                        'paid_amount' => $transaction->paid_amount,
-                        'remaining' => $transaction->total_amount - $transaction->paid_amount
+                        'paid_amount' => $transaction->paid_amount ?? 0,
+                        'remaining' => $transaction->total_amount - ($transaction->paid_amount ?? 0)
                     ];
                 });
 
+            // Update pending orders count to match the list count for consistency
+            $pendingOrders = $pendingOrdersList->count();
+
         } catch (\Exception $e) {
-            // If there's any database error, use dummy data
-            $totalPaidInvoices = 0;
-            $totalUnpaidInvoices = 12979000;
-            $pendingOrders = 3;
+            // If there's any database error, try to get basic counts
+            try {
+                $totalPaidInvoices = TransactionSale::whereNotNull('paid_amount')
+                    ->whereRaw('paid_amount >= total_amount')
+                    ->sum('total_amount') ?? 0;
+                    
+                $totalUnpaidInvoices = TransactionSale::whereRaw('COALESCE(paid_amount, 0) < total_amount')
+                    ->sum(DB::raw('total_amount - COALESCE(paid_amount, 0)')) ?? 0;
+                    
+                // For error handling, we can't get the list so we just count
+                $pendingOrders = TransactionSale::whereRaw('COALESCE(paid_amount, 0) < total_amount')
+                    ->count() ?? 0;
+                    
+                // Set empty arrays for the lists since we're in error mode
+                $pendingOrdersList = collect();
+            } catch (\Exception $e2) {
+                // Last fallback to prevent errors
+                $totalPaidInvoices = 0;
+                $totalUnpaidInvoices = 0;
+                $pendingOrders = 0;
+                $pendingOrdersList = collect();
+            }
+            
             $topProducts = collect();
             $bottomProducts = collect();
-            $pendingOrdersList = collect();
         }
 
         // If no real data, provide dummy data
@@ -146,6 +175,9 @@ class DashboardController extends Controller
                     'status' => 'Belum Lunas'
                 ]
             ]);
+            
+            // Update pending orders count to match dummy data
+            $pendingOrders = $pendingOrdersList->count();
         }
 
         return view('dashboard', compact(
@@ -156,5 +188,24 @@ class DashboardController extends Controller
             'bottomProducts',
             'pendingOrdersList'
         ));
+    }
+    
+    /**
+     * Get invoice statistics for debugging
+     */
+    public function getInvoiceStats()
+    {
+        $stats = [
+            'total_transactions' => TransactionSale::count(),
+            'paid_invoices_count' => TransactionSale::where('paid_amount', '>=', DB::raw('total_amount'))->count(),
+            'unpaid_invoices_count' => TransactionSale::where('paid_amount', '<', DB::raw('total_amount'))
+                ->orWhereNull('paid_amount')->count(),
+            'total_paid_amount' => TransactionSale::where('paid_amount', '>=', DB::raw('total_amount'))->sum('total_amount'),
+            'total_unpaid_amount' => TransactionSale::where('paid_amount', '<', DB::raw('total_amount'))
+                ->orWhereNull('paid_amount')
+                ->sum(DB::raw('total_amount - COALESCE(paid_amount, 0)')),
+        ];
+        
+        return response()->json($stats);
     }
 }
