@@ -166,5 +166,37 @@ class MasterTablesSeeder extends Seeder
                 'deleted_at' => null
             ]
         ]);
+
+        // Seed sales types (if the table exists)
+        try {
+            DB::table('master_sales_types')->insert([
+                [
+                    'sales_type_id' => 1,
+                    'name_sales_type' => 'Retail',
+                    'description_sales_type' => 'Regular retail sales',
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                    'deleted_at' => null
+                ]
+            ]);
+        } catch (\Exception $e) {
+            // Table might not exist, skip this seeding
+        }
+
+        // Seed branches (if the table exists)
+        try {
+            DB::table('master_branches')->insert([
+                [
+                    'branch_id' => 1,
+                    'name_branch' => 'Main Branch',
+                    'address_branch' => 'Jl. Kapi Sraba Raya 12A 22, Desa Mangliawan, Kecamatan Pakis, Kab. Malang Jawa Timur, 65164',
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                    'deleted_at' => null
+                ]
+            ]);
+        } catch (\Exception $e) {
+            // Table might not exist, skip this seeding
+        }
     }
 }

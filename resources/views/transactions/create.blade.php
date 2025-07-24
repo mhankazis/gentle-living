@@ -87,19 +87,12 @@
                 </div>
             </div>
 
-            <!-- Discount and Tax -->
+            <!-- Discount -->
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
                 <div>
                     <label for="discount" class="block text-sm font-medium text-gray-700 mb-2">Diskon (Rp)</label>
                     <input type="number" name="discount" id="discount" value="0" min="0" step="0.01" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
                     @error('discount')
-                        <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
-                    @enderror
-                </div>
-                <div>
-                    <label for="tax" class="block text-sm font-medium text-gray-700 mb-2">Pajak (Rp)</label>
-                    <input type="number" name="tax" id="tax" value="0" min="0" step="0.01" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
-                    @error('tax')
                         <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
                     @enderror
                 </div>
@@ -204,10 +197,8 @@ document.addEventListener('DOMContentLoaded', function() {
             });
         });
 
-        // Discount and tax input
-        document.querySelectorAll('#discount, #tax').forEach(input => {
-            input.addEventListener('input', calculateGrandTotal);
-        });
+        // Discount input
+        document.getElementById('discount').addEventListener('input', calculateGrandTotal);
     }
 
     function calculateItemSubtotal(row) {
@@ -229,9 +220,8 @@ document.addEventListener('DOMContentLoaded', function() {
         });
 
         const discount = parseFloat(document.getElementById('discount').value) || 0;
-        const tax = parseFloat(document.getElementById('tax').value) || 0;
         
-        const grandTotal = total - discount + tax;
+        const grandTotal = total - discount;
         document.getElementById('grandTotal').textContent = 'Rp ' + grandTotal.toLocaleString('id-ID');
     }
 

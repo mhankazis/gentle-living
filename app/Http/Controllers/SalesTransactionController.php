@@ -180,7 +180,6 @@ class SalesTransactionController extends Controller
                 'items.*.quantity' => 'required|integer|min:1',
                 'items.*.price' => 'required|numeric|min:0',
                 'discount' => 'nullable|numeric|min:0',
-                'tax' => 'nullable|numeric|min:0',
             ]);
 
             DB::beginTransaction();
@@ -189,14 +188,13 @@ class SalesTransactionController extends Controller
             $transaction = TransactionSale::create([
                 'number' => 'TXN-' . date('Ymd') . '-' . str_pad(TransactionSale::count() + 1, 4, '0', STR_PAD_LEFT),
                 'date' => now(),
-                'customer_id' => $validated['customer_id'],
+                'customer_id' => $validated['customer_id'] ?? 1, // Default to customer_id 1 if none selected
                 'payment_method_id' => $validated['payment_method_id'],
                 'user_id' => auth()->user()->id ?? 1,
                 'branch_id' => 1, // Default branch
                 'sales_type_id' => 1, // Default sales type
                 'subtotal' => 0,
                 'discount_amount' => $validated['discount'] ?? 0,
-                'tax_amount' => $validated['tax'] ?? 0,
                 'total_amount' => 0,
                 'paid_amount' => 0,
             ]);
@@ -210,14 +208,18 @@ class SalesTransactionController extends Controller
                 
                 $transaction->details()->create([
                     'item_id' => $item['product_id'],
-                    'quantity' => $item['quantity'],
-                    'price' => $item['price'],
-                    'total' => $itemTotal,
+                    'qty' => $item['quantity'],
+                    'sell_price' => $item['price'],
+                    'subtotal' => $itemTotal,
+                    'total_amount' => $itemTotal,
+                    'costprice' => 0, // Default value, could be fetched from product if needed
+                    'discount_amount' => 0,
+                    'discount_percentage' => 0,
                 ]);
             }
 
             // Update transaction totals
-            $total = $subtotal - ($validated['discount'] ?? 0) + ($validated['tax'] ?? 0);
+            $total = $subtotal - ($validated['discount'] ?? 0);
             $transaction->update([
                 'subtotal' => $subtotal,
                 'total_amount' => $total,

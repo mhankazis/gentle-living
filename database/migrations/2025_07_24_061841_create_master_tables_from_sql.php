@@ -98,6 +98,41 @@ return new class extends Migration
             $table->timestamps();
             $table->timestamp('deleted_at')->nullable();
         });
+
+        // Create master_branches table
+        Schema::create('master_branches', function (Blueprint $table) {
+            $table->id('branch_id');
+            $table->integer('company_id');
+            $table->string('name_branch')->nullable();
+            $table->string('phone_branch')->nullable();
+            $table->string('address_branch')->nullable();
+            $table->timestamps();
+            $table->timestamp('deleted_at')->nullable();
+        });
+
+        // Create master_sales_types table
+        Schema::create('master_sales_types', function (Blueprint $table) {
+            $table->id('sales_type_id');
+            $table->string('name_sales_type')->nullable();
+            $table->timestamps();
+            $table->timestamp('deleted_at')->nullable();
+        });
+
+        // Create transaction_sales_details table
+        Schema::create('transaction_sales_details', function (Blueprint $table) {
+            $table->id('transaction_sales_detail_id');
+            $table->integer('transaction_sales_id');
+            $table->integer('item_id');
+            $table->integer('qty')->nullable();
+            $table->double('costprice')->nullable();
+            $table->double('sell_price')->nullable();
+            $table->double('subtotal')->nullable();
+            $table->double('discount_amount')->nullable();
+            $table->double('discount_percentage')->nullable();
+            $table->double('total_amount')->nullable();
+            $table->timestamps();
+            $table->timestamp('deleted_at')->nullable();
+        });
     }
 
     /**
@@ -105,6 +140,9 @@ return new class extends Migration
      */
     public function down(): void
     {
+        Schema::dropIfExists('transaction_sales_details');
+        Schema::dropIfExists('master_sales_types');
+        Schema::dropIfExists('master_branches');
         Schema::dropIfExists('master_companies');
         Schema::dropIfExists('transaction_sales');
         Schema::dropIfExists('master_payment_methods');
