@@ -1,4 +1,8 @@
-<x-admin-layout>
+@extends('layouts.admin')
+
+@section('title', 'Data Pesanan')
+
+@section('content')
 <div class="flex-1 p-6">
     <!-- Header -->
     <div class="mb-6">
@@ -308,4 +312,4 @@ document.getElementById('checkout-btn').addEventListener('click', function() {
     });
 });
 </script>
-</x-admin-layout>
+@endsection

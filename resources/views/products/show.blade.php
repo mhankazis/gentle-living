@@ -1,4 +1,8 @@
-<x-admin-layout>
+@extends('layouts.admin')
+
+@section('title', 'Detail Produk')
+
+@section('content')
     <div class="p-6">
         <!-- Breadcrumb -->
         <div class="flex items-center text-sm text-gray-600 mb-6">
@@ -194,4 +198,4 @@
             Copyright ©2025, Gentle Baby
         </div>
     </div>
-</x-admin-layout>
+@endsection

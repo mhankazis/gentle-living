@@ -40,6 +40,8 @@ Route::middleware('auth')->group(function () {
     
     // Order routes - Pemesanan Produk
     Route::resource('orders', OrderController::class);
+    Route::get('orders-history', [OrderController::class, 'history'])->name('orders.history');
+    Route::patch('orders/{order}/status', [OrderController::class, 'updateStatus'])->name('orders.updateStatus');
     
     // Company routes - Data Perusahaan
     Route::resource('companies', CompanyController::class);

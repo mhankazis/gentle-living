@@ -1,5 +1,9 @@
-<x-admin-layout>
-    <div class="p-6">
+@extends('layouts.admin')
+
+@section('title', 'Dashboard')
+
+@section('content')
+<div class="p-6">
         <!-- Breadcrumb -->
         <div class="flex items-center text-sm text-gray-600 mb-6">
             <i class="fas fa-th-large mr-2"></i>
@@ -379,4 +383,4 @@
             }
         });
     </script>
-</x-admin-layout>
+@endsection

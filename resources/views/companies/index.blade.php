@@ -1,4 +1,8 @@
-<x-admin-layout>
+@extends('layouts.admin')
+
+@section('title', 'Data Perusahaan')
+
+@section('content')
     <div class="p-6">
         <!-- Breadcrumb -->
         <div class="flex items-center text-sm text-gray-600 mb-6">
@@ -177,4 +181,4 @@
             alert('{{ session('error') }}');
         @endif
     </script>
-</x-admin-layout>
+@endsection

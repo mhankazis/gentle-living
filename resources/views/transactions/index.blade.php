@@ -1,4 +1,8 @@
-<x-admin-layout>
+@extends('layouts.admin')
+
+@section('title', 'Data Transaksi')
+
+@section('content')
     <div class="p-6">
         <!-- Header -->
         <div class="flex items-center justify-between mb-8">
@@ -208,4 +212,4 @@
             @endif
         </div>
     </div>
-</x-admin-layout>
+@endsection

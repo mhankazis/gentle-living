@@ -30,34 +30,16 @@ class OrderController extends Controller
             
             // Fallback data
             $companies = collect([
-                (object)[
-                    'company_id' => 1, 
-                    'id' => 1, // For backward compatibility with orders view
-                    'name_company' => 'CV Berkah Jaya',
-                    'name' => 'CV Berkah Jaya', // For backward compatibility with orders view
-                    'owner_name' => 'Budi Santoso',
-                    'address' => 'Jl. Merdeka No. 123, Jakarta'
-                ],
-                (object)[
-                    'company_id' => 2, 
-                    'id' => 2, // For backward compatibility with orders view
-                    'name_company' => 'PT Maju Bersama',
-                    'name' => 'PT Maju Bersama', // For backward compatibility with orders view
-                    'owner_name' => 'Siti Rahayu',
-                    'address' => 'Jl. Diponegoro No. 456, Surabaya'
-                ]
+                (object)['company_id' => 1, 'name_company' => 'CV Berkah Jaya'],
+                (object)['company_id' => 2, 'name_company' => 'PT Maju Bersama']
             ]);
             
             $products = collect([
                 (object)[
                     'item_id' => 1, 
-                    'id' => 1, // For backward compatibility with orders view
                     'name_item' => 'Baju Bayi Premium',
-                    'name' => 'Baju Bayi Premium', // For backward compatibility with orders view
-                    'sell_price' => 75000,
-                    'price' => 75000, // For backward compatibility with orders view
-                    'stock' => 20,
-                    'image' => null, // For orders view compatibility
+                    'sellingprice_item' => 75000,
+                    'stock_item' => 20,
                     'category' => (object)['name_category' => 'Pakaian Bayi']
                 ]
             ]);
@@ -154,13 +136,13 @@ class OrderController extends Controller
                     $product = Product::find($item['product_id']);
                     if (!$product) continue;
 
-                    $subtotal = ($product->sell_price ?? $product->costprice_item ?? 0) * $item['quantity'];
+                    $subtotal = ($product->sellingprice_item ?? $product->costprice_item ?? 0) * $item['quantity'];
                     
                     OrderItem::create([
                         'order_id' => $order->id,
                         'product_id' => $item['product_id'],
                         'quantity' => $item['quantity'],
-                        'unit_price' => $product->sell_price ?? $product->costprice_item ?? 0,
+                        'unit_price' => $product->sellingprice_item ?? $product->costprice_item ?? 0,
                         'subtotal' => $subtotal,
                     ]);
 

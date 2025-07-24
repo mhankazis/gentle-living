@@ -36,16 +36,14 @@ class AdminController extends Controller
             // Fallback dengan dummy data
             $dummyAdmins = collect([
                 (object)[
-                    'user_id' => 1,
-                    'id' => 1, // For backward compatibility with views
+                    'id' => 1,
                     'name' => 'Admin Utama',
                     'email' => 'admin@gentlebaby.com',
                     'phone' => '081234567890',
                     'created_at' => now()
                 ],
                 (object)[
-                    'user_id' => 2,
-                    'id' => 2, // For backward compatibility with views
+                    'id' => 2,
                     'name' => 'Kasir 1',
                     'email' => 'kasir1@gentlebaby.com',
                     'phone' => '081234567891',
@@ -81,7 +79,7 @@ class AdminController extends Controller
         try {
             $validated = $request->validate([
                 'name' => 'required|string|max:255',
-                'email' => 'required|email|unique:master_users,email',
+                'email' => 'required|email|unique:users,email',
                 'password' => 'required|string|min:8|confirmed',
                 'phone' => 'nullable|string|max:20',
             ]);
@@ -121,7 +119,7 @@ class AdminController extends Controller
         try {
             $rules = [
                 'name' => 'required|string|max:255',
-                'email' => 'required|email|unique:master_users,email,' . $admin->user_id,
+                'email' => 'required|email|unique:users,email,' . $admin->id,
                 'phone' => 'nullable|string|max:20',
             ];
 

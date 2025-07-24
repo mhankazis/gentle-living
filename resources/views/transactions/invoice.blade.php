@@ -1,4 +1,8 @@
-<x-admin-layout>
+@extends('layouts.admin')
+
+@section('title', 'Invoice')
+
+@section('content')
     <div class="p-6">
         <!-- Breadcrumb -->
         <div class="flex items-center text-sm text-gray-600 mb-6">
@@ -202,4 +206,4 @@
             }
         @endif
     </script>
-</x-admin-layout>
+@endsection

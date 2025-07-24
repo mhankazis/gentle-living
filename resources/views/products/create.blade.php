@@ -1,4 +1,8 @@
-<x-admin-layout>
+@extends('layouts.admin')
+
+@section('title', 'Tambah Produk')
+
+@section('content')
     <div class="p-6">
         <!-- Breadcrumb -->
         <div class="flex items-center text-sm text-gray-600 mb-6">
@@ -25,44 +29,61 @@
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <!-- Name -->
                         <div>
-                            <label for="name" class="block text-sm font-medium text-gray-700 mb-2">Nama Produk</label>
+                            <label for="name_item" class="block text-sm font-medium text-gray-700 mb-2">Nama Produk</label>
                             <input type="text" 
-                                   id="name" 
-                                   name="name" 
-                                   value="{{ old('name') }}" 
+                                   id="name_item" 
+                                   name="name_item" 
+                                   value="{{ old('name_item') }}" 
                                    required
                                    class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
-                            @error('name')
+                            @error('name_item')
                                 <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                             @enderror
                         </div>
 
-                        <!-- Price -->
+                        <!-- Cost Price -->
                         <div>
-                            <label for="price" class="block text-sm font-medium text-gray-700 mb-2">Harga</label>
+                            <label for="costprice_item" class="block text-sm font-medium text-gray-700 mb-2">Harga Modal</label>
                             <input type="number" 
-                                   id="price" 
-                                   name="price" 
-                                   value="{{ old('price') }}" 
+                                   id="costprice_item" 
+                                   name="costprice_item" 
+                                   value="{{ old('costprice_item') }}" 
                                    required
                                    min="0"
+                                   step="0.01"
                                    class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
-                            @error('price')
+                            @error('costprice_item')
+                                <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                            @enderror
+                        </div>
+
+                        <!-- Selling Price -->
+                        <div>
+                            <label for="sellingprice_item" class="block text-sm font-medium text-gray-700 mb-2">Harga Jual</label>
+                            <input type="number" 
+                                   id="sellingprice_item" 
+                                   name="sellingprice_item" 
+                                   value="{{ old('sellingprice_item') }}" 
+                                   required
+                                   min="0"
+                                   step="0.01"
+                                   class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                            @error('sellingprice_item')
                                 <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                             @enderror
                         </div>
 
                         <!-- Stock -->
                         <div>
-                            <label for="stock" class="block text-sm font-medium text-gray-700 mb-2">Stok</label>
+                            <label for="stock_item" class="block text-sm font-medium text-gray-700 mb-2">Stok</label>
                             <input type="number" 
-                                   id="stock" 
-                                   name="stock" 
-                                   value="{{ old('stock') }}" 
+                                   id="stock_item" 
+                                   name="stock_item" 
+                                   value="{{ old('stock_item') }}" 
                                    required
                                    min="0"
                                    class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
-                            @error('stock')
+                            @error('stock_item')
                                 <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                             @enderror
                         </div>
@@ -75,11 +96,19 @@
                                     required
                                     class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
                                 <option value="">Pilih Kategori</option>
-                                @foreach(\App\Models\Category::all() as $category)
-                                    <option value="{{ $category->id }}" {{ old('category_id') == $category->id ? 'selected' : '' }}>
-                                        {{ $category->name }}
-                                    </option>
-                                @endforeach
+                                @if(isset($categories) && $categories->count() > 0)
+                                    @foreach($categories as $category)
+                                        <option value="{{ $category->category_id }}" {{ old('category_id') == $category->category_id ? 'selected' : '' }}>
+                                            {{ $category->name_category }}
+                                        </option>
+                                    @endforeach
+                                @else
+                                    <option value="1" {{ old('category_id') == '1' ? 'selected' : '' }}>Pakaian Bayi</option>
+                                    <option value="2" {{ old('category_id') == '2' ? 'selected' : '' }}>Perlengkapan Mandi</option>
+                                    <option value="3" {{ old('category_id') == '3' ? 'selected' : '' }}>Mainan Bayi</option>
+                                    <option value="4" {{ old('category_id') == '4' ? 'selected' : '' }}>Peralatan Makan</option>
+                                    <option value="5" {{ old('category_id') == '5' ? 'selected' : '' }}>Perlengkapan Tidur</option>
+                                @endif
                             </select>
                             @error('category_id')
                                 <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
@@ -93,10 +122,29 @@
                                     name="is_active" 
                                     required
                                     class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
-                                <option value="1" {{ old('is_active', '1') == '1' ? 'selected' : '' }}>Active</option>
-                                <option value="0" {{ old('is_active') == '0' ? 'selected' : '' }}>Inactive</option>
+                                <option value="1" {{ old('is_active', '1') == '1' ? 'selected' : '' }}>Aktif</option>
+                                <option value="0" {{ old('is_active') == '0' ? 'selected' : '' }}>Tidak Aktif</option>
                             </select>
                             @error('is_active')
+                                <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                            @enderror
+                        </div>
+
+                        <!-- Unit -->
+                        <div>
+                            <label for="unit_item" class="block text-sm font-medium text-gray-700 mb-2">Satuan</label>
+                            <select id="unit_item" 
+                                    name="unit_item" 
+                                    class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                                <option value="">Pilih Satuan</option>
+                                <option value="pcs" {{ old('unit_item') == 'pcs' ? 'selected' : '' }}>Pieces (pcs)</option>
+                                <option value="kg" {{ old('unit_item') == 'kg' ? 'selected' : '' }}>Kilogram (kg)</option>
+                                <option value="liter" {{ old('unit_item') == 'liter' ? 'selected' : '' }}>Liter</option>
+                                <option value="box" {{ old('unit_item') == 'box' ? 'selected' : '' }}>Box</option>
+                                <option value="pack" {{ old('unit_item') == 'pack' ? 'selected' : '' }}>Pack</option>
+                                <option value="set" {{ old('unit_item') == 'set' ? 'selected' : '' }}>Set</option>
+                            </select>
+                            @error('unit_item')
                                 <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                             @enderror
                         </div>
@@ -104,12 +152,13 @@
 
                     <!-- Description -->
                     <div class="mt-6">
-                        <label for="description" class="block text-sm font-medium text-gray-700 mb-2">Deskripsi</label>
-                        <textarea id="description" 
-                                  name="description" 
+                        <label for="description_item" class="block text-sm font-medium text-gray-700 mb-2">Deskripsi Produk</label>
+                        <textarea id="description_item" 
+                                  name="description_item" 
                                   rows="4"
-                                  class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">{{ old('description') }}</textarea>
-                        @error('description')
+                                  placeholder="Masukkan deskripsi produk..."
+                                  class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">{{ old('description_item') }}</textarea>
+                        @error('description_item')
                             <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                         @enderror
                     </div>
@@ -134,4 +183,4 @@
             Copyright ©2025, Gentle Baby
         </div>
     </div>
-</x-admin-layout>
+@endsection

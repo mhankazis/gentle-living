@@ -33,9 +33,12 @@ class TransactionSaleDetail extends Model
         'transaction_sales_id',
         'item_id',
         'qty',
+        'quantity',
+        'price',
         'costprice',
         'sell_price',
         'subtotal',
+        'total',
         'discount_amount',
         'discount_percentage',
         'total_amount',
@@ -47,9 +50,11 @@ class TransactionSaleDetail extends Model
      * @var array
      */
     protected $casts = [
+        'price' => 'decimal:2',
         'costprice' => 'decimal:2',
         'sell_price' => 'decimal:2',
         'subtotal' => 'decimal:2',
+        'total' => 'decimal:2',
         'discount_amount' => 'decimal:2',
         'discount_percentage' => 'decimal:2',
         'total_amount' => 'decimal:2',
