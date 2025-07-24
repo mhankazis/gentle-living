@@ -63,12 +63,12 @@
                 <div class="flex items-center justify-between">
                     <div>
                         <div class="flex items-center mb-2">
-                            <i class="fas fa-clock mr-2"></i>
-                            <span class="text-sm font-medium">Pesanan Belum Selesai Diproses</span>
+                            <i class="fas fa-exclamation-triangle mr-2"></i>
+                            <span class="text-sm font-medium">Transaksi Belum Lunas</span>
                         </div>
                         <div class="text-3xl font-bold">{{ count($pendingOrdersList ?? []) }}</div>
                         <div class="text-xs text-yellow-200 mt-1">
-                            Transaksi yang belum lunas - Lihat detail di bawah
+                            Transaksi yang belum dibayar penuh - Lihat detail di bawah
                         </div>
                     </div>
                     <div class="text-yellow-200">
@@ -76,40 +76,52 @@
                     </div>
                 </div>
                 <div class="absolute -right-4 -bottom-4 opacity-20">
-                    <i class="fas fa-hourglass-half text-6xl"></i>
+                    <i class="fas fa-money-bill-wave text-6xl"></i>
                 </div>
             </a>
         </div>
 
         <!-- Data Tables -->
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-            <!-- 5 Produk Teratas -->
+            <!-- 5 Items Teratas -->
             <div class="bg-white rounded-xl shadow-sm border border-gray-200">
                 <div class="p-6 border-b border-gray-200">
-                    <h2 class="text-lg font-semibold text-gray-800">5 Produk Teratas</h2>
+                    <h2 class="text-lg font-semibold text-gray-800">5 Items Teratas</h2>
+                    <p class="text-sm text-gray-600 mt-1">Berdasarkan jumlah terjual</p>
                 </div>
                 <div class="overflow-x-auto">
                     <table class="w-full">
                         <thead class="bg-gray-50">
                             <tr>
                                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Peringkat</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nama</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Qty</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nilai</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nama Item</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Qty Terjual</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Total Nilai</th>
                             </tr>
                         </thead>
                         <tbody class="bg-white divide-y divide-gray-200">
                             @forelse($topProducts as $product)
                             <tr>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ $product->rank }}</td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ $product->name }}</td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ $product->total_qty }}</td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">Rp {{ number_format($product->total_value, 0, ',', '.') }}</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                                    <span class="inline-flex items-center justify-center w-6 h-6 bg-green-100 text-green-800 text-xs font-bold rounded-full">
+                                        {{ $product->rank }}
+                                    </span>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{{ $product->name }}</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                                    <span class="px-2 py-1 text-xs font-medium bg-blue-100 text-blue-800 rounded-full">
+                                        {{ number_format($product->total_qty, 0, ',', '.') }}
+                                    </span>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm font-semibold text-gray-900">Rp {{ number_format($product->total_value, 0, ',', '.') }}</td>
                             </tr>
                             @empty
                             <tr>
                                 <td colspan="4" class="px-6 py-8 text-center text-gray-500">
-                                    Tidak ada data produk
+                                    <div class="flex flex-col items-center justify-center">
+                                        <i class="fas fa-box text-3xl text-gray-300 mb-2"></i>
+                                        <p>Tidak ada data item</p>
+                                    </div>
                                 </td>
                             </tr>
                             @endforelse
@@ -118,33 +130,45 @@
                 </div>
             </div>
 
-            <!-- 5 Produk Paling Terbawah -->
+            <!-- 5 Items Paling Rendah -->
             <div class="bg-white rounded-xl shadow-sm border border-gray-200">
                 <div class="p-6 border-b border-gray-200">
-                    <h2 class="text-lg font-semibold text-gray-800">5 Produk Paling Terbawah</h2>
+                    <h2 class="text-lg font-semibold text-gray-800">5 Items Paling Rendah</h2>
+                    <p class="text-sm text-gray-600 mt-1">Berdasarkan jumlah terjual</p>
                 </div>
                 <div class="overflow-x-auto">
                     <table class="w-full">
                         <thead class="bg-gray-50">
                             <tr>
                                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Peringkat</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nama</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Qty</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nilai</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nama Item</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Qty Terjual</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Total Nilai</th>
                             </tr>
                         </thead>
                         <tbody class="bg-white divide-y divide-gray-200">
                             @forelse($bottomProducts as $product)
                             <tr>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ $product->rank }}</td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ $product->name }}</td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ $product->total_qty }}</td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">Rp {{ number_format($product->total_value, 0, ',', '.') }}</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                                    <span class="inline-flex items-center justify-center w-6 h-6 bg-red-100 text-red-800 text-xs font-bold rounded-full">
+                                        {{ $product->rank }}
+                                    </span>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{{ $product->name }}</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                                    <span class="px-2 py-1 text-xs font-medium bg-orange-100 text-orange-800 rounded-full">
+                                        {{ number_format($product->total_qty, 0, ',', '.') }}
+                                    </span>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm font-semibold text-gray-900">Rp {{ number_format($product->total_value, 0, ',', '.') }}</td>
                             </tr>
                             @empty
                             <tr>
                                 <td colspan="4" class="px-6 py-8 text-center text-gray-500">
-                                    Tidak ada data produk
+                                    <div class="flex flex-col items-center justify-center">
+                                        <i class="fas fa-box text-3xl text-gray-300 mb-2"></i>
+                                        <p>Tidak ada data item</p>
+                                    </div>
                                 </td>
                             </tr>
                             @endforelse
@@ -158,9 +182,12 @@
         <div id="pending-orders" class="mt-8 bg-white rounded-xl shadow-sm border border-gray-200">
             <div class="p-6 border-b border-gray-200">
                 <div class="flex items-center justify-between">
-                    <h2 class="text-lg font-semibold text-gray-800">Daftar pesanan belum selesai diproses</h2>
+                    <div>
+                        <h2 class="text-lg font-semibold text-gray-800">Daftar Transaksi Belum Lunas</h2>
+                        <p class="text-sm text-gray-600 mt-1">Transaksi yang belum dibayar penuh</p>
+                    </div>
                     <span class="px-3 py-1 bg-yellow-100 text-yellow-800 text-sm rounded-full font-medium">
-                        {{ count($pendingOrdersList ?? []) }} pesanan
+                        {{ count($pendingOrdersList ?? []) }} transaksi
                     </span>
                 </div>
             </div>
@@ -187,43 +214,74 @@
                         <thead class="bg-gray-50">
                             <tr>
                                 <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">No</th>
-                                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tanggal Transaksi</th>
-                                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Kode Transaksi</th>
-                                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nama Perusahaan</th>
-                                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nama Barang</th>
-                                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status Proses</th>
+                                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tanggal</th>
+                                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">No. Transaksi</th>
+                                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Customer</th>
+                                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nama Item</th>
+                                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status Pembayaran</th>
                                 <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Qty</th>
-                                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Sub Total</th>
+                                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Subtotal</th>
+                                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Sisa Bayar</th>
                             </tr>
                         </thead>
                         <tbody class="bg-white divide-y divide-gray-200">
                             @forelse($pendingOrdersList as $order)
                                 @foreach($order['items'] as $index => $item)
-                                <tr>
+                                <tr class="hover:bg-gray-50">
                                     @if($index === 0)
-                                        <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-900" rowspan="{{ count($order['items']) }}">{{ $order['no'] }}</td>
+                                        <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-900 font-medium" rowspan="{{ count($order['items']) }}">{{ $order['no'] }}</td>
                                         <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-900" rowspan="{{ count($order['items']) }}">{{ $order['date'] }}</td>
                                         <td class="px-4 py-4 whitespace-nowrap text-sm text-blue-600 font-medium" rowspan="{{ count($order['items']) }}">{{ $order['number'] }}</td>
                                         <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-900" rowspan="{{ count($order['items']) }}">{{ $order['customer'] }}</td>
                                     @endif
-                                    <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-900">{{ $item['name'] }}</td>
+                                    <td class="px-4 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{{ $item['name'] }}</td>
                                     @if($index === 0)
                                         <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-900" rowspan="{{ count($order['items']) }}">
-                                            <span class="px-2 py-1 text-xs font-medium bg-yellow-100 text-yellow-800 rounded-full">
-                                                {{ $order['status'] }}
-                                            </span>
+                                            @if($order['status'] === 'Belum Lunas')
+                                                <span class="px-2 py-1 text-xs font-medium bg-red-100 text-red-800 rounded-full">
+                                                    <i class="fas fa-exclamation-circle mr-1"></i>
+                                                    Belum Lunas
+                                                </span>
+                                            @elseif($order['status'] === 'Partial')
+                                                <span class="px-2 py-1 text-xs font-medium bg-yellow-100 text-yellow-800 rounded-full">
+                                                    <i class="fas fa-clock mr-1"></i>
+                                                    Partial
+                                                </span>
+                                            @else
+                                                <span class="px-2 py-1 text-xs font-medium bg-green-100 text-green-800 rounded-full">
+                                                    <i class="fas fa-check-circle mr-1"></i>
+                                                    Lunas
+                                                </span>
+                                            @endif
                                         </td>
                                     @endif
-                                    <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-900">{{ $item['qty'] }}</td>
-                                    <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-900">Rp {{ number_format($item['subtotal'], 0, ',', '.') }}</td>
+                                    <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-900">
+                                        <span class="px-2 py-1 text-xs font-medium bg-blue-100 text-blue-800 rounded-full">
+                                            {{ number_format($item['qty'], 0, ',', '.') }}
+                                        </span>
+                                    </td>
+                                    <td class="px-4 py-4 whitespace-nowrap text-sm font-semibold text-gray-900">Rp {{ number_format($item['subtotal'], 0, ',', '.') }}</td>
+                                    @if($index === 0)
+                                        <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-900" rowspan="{{ count($order['items']) }}">
+                                            <div class="text-right">
+                                                <div class="text-sm font-semibold text-red-600">Rp {{ number_format($order['remaining'] ?? ($order['total_amount'] - ($order['paid_amount'] ?? 0)), 0, ',', '.') }}</div>
+                                                @if(isset($order['paid_amount']) && $order['paid_amount'] > 0)
+                                                    <div class="text-xs text-gray-500">
+                                                        Sudah bayar: Rp {{ number_format($order['paid_amount'], 0, ',', '.') }}
+                                                    </div>
+                                                @endif
+                                            </div>
+                                        </td>
+                                    @endif
                                 </tr>
                                 @endforeach
                             @empty
                             <tr>
-                                <td colspan="8" class="text-center py-12 text-gray-500">
+                                <td colspan="9" class="text-center py-12 text-gray-500">
                                     <div class="flex flex-col items-center justify-center">
-                                        <i class="fas fa-clipboard-list text-4xl text-gray-300 mb-4"></i>
-                                        <p>Tidak ada pesanan yang belum diproses</p>
+                                        <i class="fas fa-check-circle text-4xl text-green-300 mb-4"></i>
+                                        <p class="text-lg font-medium">Semua transaksi sudah lunas!</p>
+                                        <p class="text-sm">Tidak ada transaksi yang belum dibayar penuh</p>
                                     </div>
                                 </td>
                             </tr>
@@ -248,87 +306,87 @@
             </div>
         </div>
         <!-- Feature Cards Section -->
-        <div class="mt-12 grid grid-cols-1 md:grid-cols-2 gap-8">
-            <!-- Data Produk -->
+        <div class="mt-12 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <!-- Data Items/Produk -->
             <a href="{{ route('products.index') }}" class="block bg-white rounded-xl shadow-sm border border-gray-200 p-8 hover:shadow-md transition-shadow duration-200 cursor-pointer">
                 <div class="flex items-start justify-between">
                     <div class="flex-1">
-                        <h3 class="text-xl font-bold text-gray-900 mb-3">Data Produk</h3>
+                        <h3 class="text-xl font-bold text-gray-900 mb-3">Data Items</h3>
                         <p class="text-gray-600 text-sm leading-relaxed">
-                            Fitur ini digunakan untuk mengelola data produk seperti menambah, memperbarui, atau menghapus data produk.
+                            Mengelola data master items/produk seperti menambah, memperbarui, atau menghapus data produk.
                         </p>
                     </div>
                     <div class="ml-6 flex-shrink-0">
-                        <div class="w-16 h-16 bg-gray-100 rounded-lg flex items-center justify-center">
-                            <i class="fas fa-box text-2xl text-gray-600"></i>
+                        <div class="w-16 h-16 bg-blue-100 rounded-lg flex items-center justify-center">
+                            <i class="fas fa-box text-2xl text-blue-600"></i>
                         </div>
                     </div>
                 </div>
             </a>
 
-            <!-- Data Transaksi -->
+            <!-- Data Transaksi Penjualan -->
             <a href="{{ route('transactions.index') }}" class="block bg-white rounded-xl shadow-sm border border-gray-200 p-8 hover:shadow-md transition-shadow duration-200 cursor-pointer">
                 <div class="flex items-start justify-between">
                     <div class="flex-1">
-                        <h3 class="text-xl font-bold text-gray-900 mb-3">Data Transaksi</h3>
+                        <h3 class="text-xl font-bold text-gray-900 mb-3">Transaksi Penjualan</h3>
                         <p class="text-gray-600 text-sm leading-relaxed">
-                            Fitur ini digunakan untuk mengelola data transaksi seperti memperbarui data transaksi.
+                            Mengelola data transaksi penjualan dan detail transaksi sales.
                         </p>
                     </div>
                     <div class="ml-6 flex-shrink-0">
-                        <div class="w-16 h-16 bg-gray-100 rounded-lg flex items-center justify-center">
-                            <i class="fas fa-exchange-alt text-2xl text-gray-600"></i>
+                        <div class="w-16 h-16 bg-green-100 rounded-lg flex items-center justify-center">
+                            <i class="fas fa-cash-register text-2xl text-green-600"></i>
                         </div>
                     </div>
                 </div>
             </a>
 
-            <!-- Pemesanan Produk -->
+            <!-- Data Pesanan -->
             <a href="{{ route('orders.index') }}" class="block bg-white rounded-xl shadow-sm border border-gray-200 p-8 hover:shadow-md transition-shadow duration-200 cursor-pointer">
                 <div class="flex items-start justify-between">
                     <div class="flex-1">
-                        <h3 class="text-xl font-bold text-gray-900 mb-3">Pemesanan Produk</h3>
+                        <h3 class="text-xl font-bold text-gray-900 mb-3">Data Pesanan</h3>
                         <p class="text-gray-600 text-sm leading-relaxed">
-                            Pemesanan produk merupakan fitur yang digunakan untuk melakukan pemesanan produk.
+                            Mengelola pemesanan produk dan status pemrosesan pesanan.
                         </p>
                     </div>
                     <div class="ml-6 flex-shrink-0">
-                        <div class="w-16 h-16 bg-gray-100 rounded-lg flex items-center justify-center">
-                            <i class="fas fa-clipboard-list text-2xl text-gray-600"></i>
+                        <div class="w-16 h-16 bg-yellow-100 rounded-lg flex items-center justify-center">
+                            <i class="fas fa-clipboard-list text-2xl text-yellow-600"></i>
                         </div>
                     </div>
                 </div>
             </a>
 
-            <!-- Data Pelanggan -->
+            <!-- Data Customers -->
             <a href="{{ route('companies.index') }}" class="block bg-white rounded-xl shadow-sm border border-gray-200 p-8 hover:shadow-md transition-shadow duration-200 cursor-pointer">
                 <div class="flex items-start justify-between">
                     <div class="flex-1">
-                        <h3 class="text-xl font-bold text-gray-900 mb-3">Data Pelanggan</h3>
+                        <h3 class="text-xl font-bold text-gray-900 mb-3">Data Customers</h3>
                         <p class="text-gray-600 text-sm leading-relaxed">
-                            Fitur ini digunakan untuk mengelola data pelanggan seperti menambah, mengubah, memperbarui data pelanggan.
+                            Mengelola data master customers/pelanggan seperti menambah, mengubah, memperbarui data pelanggan.
                         </p>
                     </div>
                     <div class="ml-6 flex-shrink-0">
-                        <div class="w-16 h-16 bg-gray-100 rounded-lg flex items-center justify-center">
-                            <i class="fas fa-users text-2xl text-gray-600"></i>
+                        <div class="w-16 h-16 bg-purple-100 rounded-lg flex items-center justify-center">
+                            <i class="fas fa-users text-2xl text-purple-600"></i>
                         </div>
                     </div>
                 </div>
             </a>
 
-            <!-- Data Admin -->
+            <!-- Data Users/Admin -->
             <a href="{{ route('admins.index') }}" class="block bg-white rounded-xl shadow-sm border border-gray-200 p-8 hover:shadow-md transition-shadow duration-200 cursor-pointer">
                 <div class="flex items-start justify-between">
                     <div class="flex-1">
-                        <h3 class="text-xl font-bold text-gray-900 mb-3">Data Admin</h3>
+                        <h3 class="text-xl font-bold text-gray-900 mb-3">Data Users</h3>
                         <p class="text-gray-600 text-sm leading-relaxed">
-                            Fitur ini digunakan untuk mengelola data admin seperti
+                            Mengelola data master users/admin sistem dan pengaturan akses pengguna.
                         </p>
                     </div>
                     <div class="ml-6 flex-shrink-0">
-                        <div class="w-16 h-16 bg-gray-100 rounded-lg flex items-center justify-center">
-                            <i class="fas fa-user-shield text-2xl text-gray-600"></i>
+                        <div class="w-16 h-16 bg-red-100 rounded-lg flex items-center justify-center">
+                            <i class="fas fa-user-shield text-2xl text-red-600"></i>
                         </div>
                     </div>
                 </div>
@@ -340,12 +398,12 @@
                     <div class="flex-1">
                         <h3 class="text-xl font-bold text-gray-900 mb-3">Data Invoice</h3>
                         <p class="text-gray-600 text-sm leading-relaxed">
-                            Fitur ini digunakan untuk mengelola data invoice.
+                            Mengelola data invoice penjualan dan status pembayaran pelanggan.
                         </p>
                     </div>
                     <div class="ml-6 flex-shrink-0">
-                        <div class="w-16 h-16 bg-gray-100 rounded-lg flex items-center justify-center">
-                            <i class="fas fa-file-invoice text-2xl text-gray-600"></i>
+                        <div class="w-16 h-16 bg-indigo-100 rounded-lg flex items-center justify-center">
+                            <i class="fas fa-file-invoice text-2xl text-indigo-600"></i>
                         </div>
                     </div>
                 </div>

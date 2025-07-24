@@ -6,6 +6,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Auth;
 
 class AdminController extends Controller
 {
@@ -154,18 +155,17 @@ class AdminController extends Controller
     public function destroy(User $admin)
     {
         try {
-            // Prevent deleting the last admin
-            if (User::count() <= 1) {
-                return redirect()->route('admins.index')->with('error', 'Tidak dapat menghapus admin terakhir!');
-            }
+// Prevent deleting the last admin
+if (User::count() <= 1) {
+    return redirect()->route('admins.index')->with('error', 'Tidak dapat menghapus admin terakhir!');
+}
+// Prevent deleting current user
+if (Auth::check() && $admin->id === Auth::id()) {
+    return redirect()->route('admins.index')->with('error', 'Tidak dapat menghapus akun sendiri!');
+}
 
-            // Prevent deleting current user
-            if (auth()->check() && $admin->id === auth()->id()) {
-                return redirect()->route('admins.index')->with('error', 'Tidak dapat menghapus akun sendiri!');
-            }
-
-            $admin->delete();
-            return redirect()->route('admins.index')->with('success', 'Admin berhasil dihapus!');
+$admin->delete();
+return redirect()->route('admins.index')->with('success', 'Admin berhasil dihapus!');
 
         } catch (\Exception $e) {
             Log::error('Error deleting admin: ' . $e->getMessage());

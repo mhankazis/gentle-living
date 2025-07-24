@@ -28,13 +28,13 @@ class DashboardController extends Controller
 
             // Top 5 Products by quantity sold
             $topProducts = DB::table('transaction_sales_details as tsd')
-                ->join('master_items as mi', 'tsd.item_id', '=', 'mi.items_id')
+                ->join('master_items as mi', 'tsd.item_id', '=', 'mi.item_id')
                 ->select(
-                    'mi.name_items as name',
-                    DB::raw('SUM(tsd.quantity) as total_qty'),
-                    DB::raw('SUM(tsd.quantity * tsd.unit_price) as total_value')
+                    'mi.name_item as name',
+                    DB::raw('SUM(tsd.qty) as total_qty'),
+                    DB::raw('SUM(tsd.subtotal) as total_value')
                 )
-                ->groupBy('tsd.item_id', 'mi.name_items')
+                ->groupBy('tsd.item_id', 'mi.name_item')
                 ->orderByDesc('total_qty')
                 ->limit(5)
                 ->get()
@@ -45,13 +45,13 @@ class DashboardController extends Controller
 
             // Bottom 5 Products by quantity sold
             $bottomProducts = DB::table('transaction_sales_details as tsd')
-                ->join('master_items as mi', 'tsd.item_id', '=', 'mi.items_id')
+                ->join('master_items as mi', 'tsd.item_id', '=', 'mi.item_id')
                 ->select(
-                    'mi.name_items as name',
-                    DB::raw('SUM(tsd.quantity) as total_qty'),
-                    DB::raw('SUM(tsd.quantity * tsd.unit_price) as total_value')
+                    'mi.name_item as name',
+                    DB::raw('SUM(tsd.qty) as total_qty'),
+                    DB::raw('SUM(tsd.subtotal) as total_value')
                 )
-                ->groupBy('tsd.item_id', 'mi.name_items')
+                ->groupBy('tsd.item_id', 'mi.name_item')
                 ->orderBy('total_qty', 'asc')
                 ->limit(5)
                 ->get()
@@ -63,26 +63,36 @@ class DashboardController extends Controller
             // Pending Orders (transactions that are not fully paid)
             $pendingOrdersList = TransactionSale::with(['customer', 'details.item'])
                 ->whereRaw('COALESCE(paid_amount, 0) < total_amount')
+                ->where('total_amount', '>', 0) // Ensure there are valid transactions
                 ->orderBy('date', 'desc')
                 ->limit(10)
                 ->get()
                 ->map(function($transaction, $index) {
+                    $remainingAmount = $transaction->total_amount - ($transaction->paid_amount ?? 0);
+                    $paymentStatus = 'Belum Lunas';
+                    
+                    if ($transaction->paid_amount >= $transaction->total_amount) {
+                        $paymentStatus = 'Lunas';
+                    } elseif ($transaction->paid_amount > 0) {
+                        $paymentStatus = 'Partial';
+                    }
+                    
                     return [
                         'no' => $index + 1,
-                        'date' => $transaction->date->format('d/m/Y'),
-                        'number' => $transaction->number,
+                        'date' => $transaction->date ? $transaction->date->format('d/m/Y') : '-',
+                        'number' => $transaction->number ?? 'TRX-' . str_pad($transaction->transaction_sales_id, 6, '0', STR_PAD_LEFT),
                         'customer' => $transaction->customer->name_customer ?? 'Walk-in Customer',
                         'items' => $transaction->details->map(function($detail) {
                             return [
-                                'name' => $detail->item->name_items ?? 'Unknown Item',
-                                'qty' => $detail->quantity,
-                                'subtotal' => $detail->quantity * $detail->unit_price
+                                'name' => $detail->item->name_item ?? 'Unknown Item',
+                                'qty' => $detail->qty ?? 0,
+                                'subtotal' => $detail->subtotal ?? 0
                             ];
                         }),
-                        'status' => 'Belum Lunas',
+                        'status' => $paymentStatus,
                         'total_amount' => $transaction->total_amount,
                         'paid_amount' => $transaction->paid_amount ?? 0,
-                        'remaining' => $transaction->total_amount - ($transaction->paid_amount ?? 0)
+                        'remaining' => $remainingAmount
                     ];
                 });
 
@@ -139,40 +149,48 @@ class DashboardController extends Controller
             ]);
         }
 
-        // If no real data, provide dummy data
+        // If no real data, provide realistic dummy data that matches database structure
         if ($pendingOrdersList->isEmpty()) {
             $pendingOrdersList = collect([
                 [
                     'no' => 1,
-                    'date' => '20/07/2025',
-                    'number' => 'TRX-20250720-001',
-                    'customer' => 'PT. Sumber Rejeki',
+                    'date' => '24/07/2025',
+                    'number' => 'TRX-20250724-001',
+                    'customer' => 'PT. Baby Shop Indonesia',
                     'items' => [
-                        ['name' => 'Gimme Food (GF)', 'qty' => 5, 'subtotal' => 125000],
-                        ['name' => 'Baby Calmer (BC)', 'qty' => 3, 'subtotal' => 75000]
+                        ['name' => 'Susu Formula', 'qty' => 2, 'subtotal' => 50000],
+                        ['name' => 'Biskuit Bayi', 'qty' => 1, 'subtotal' => 25000]
                     ],
-                    'status' => 'Belum Lunas'
+                    'status' => 'Belum Lunas',
+                    'total_amount' => 75000,
+                    'paid_amount' => 0,
+                    'remaining' => 75000
                 ],
                 [
                     'no' => 2,
-                    'date' => '19/07/2025',
-                    'number' => 'TRX-20250719-002',
-                    'customer' => 'CV. Maju Bersama',
+                    'date' => '23/07/2025',
+                    'number' => 'TRX-20250723-002',
+                    'customer' => 'CV. Gentle Care',
                     'items' => [
-                        ['name' => 'Massage Your Baby (MYB)', 'qty' => 2, 'subtotal' => 50000],
-                        ['name' => 'LDR (15ml)', 'qty' => 4, 'subtotal' => 100000]
+                        ['name' => 'Susu Formula', 'qty' => 3, 'subtotal' => 75000]
                     ],
-                    'status' => 'Belum Lunas'
+                    'status' => 'Partial',
+                    'total_amount' => 75000,
+                    'paid_amount' => 30000,
+                    'remaining' => 45000
                 ],
                 [
                     'no' => 3,
-                    'date' => '18/07/2025',
-                    'number' => 'TRX-20250718-003',
+                    'date' => '22/07/2025',
+                    'number' => 'TRX-20250722-003',
                     'customer' => 'Toko Baby Shop',
                     'items' => [
-                        ['name' => 'Organic Gentle (OG)', 'qty' => 6, 'subtotal' => 150000]
+                        ['name' => 'Biskuit Bayi', 'qty' => 4, 'subtotal' => 100000]
                     ],
-                    'status' => 'Belum Lunas'
+                    'status' => 'Belum Lunas',
+                    'total_amount' => 100000,
+                    'paid_amount' => 0,
+                    'remaining' => 100000
                 ]
             ]);
             
