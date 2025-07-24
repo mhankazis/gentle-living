@@ -197,16 +197,15 @@
             </div>
             
             <!-- Pagination -->
-            <div class="px-6 py-4 border-t border-gray-200">
-                <div class="flex justify-between items-center">
-                    <div class="text-sm text-gray-600">
-                        Showing {{ $transactions->firstItem() ?? 0 }} to {{ $transactions->lastItem() ?? 0 }} of {{ $transactions->total() }} entries
-                    </div>
-                    <div>
-                        {{ $transactions->appends(request()->query())->links() }}
+            @if($transactions->hasPages())
+                {{ $transactions->appends(request()->query())->links('custom-pagination') }}
+            @else
+                <div class="px-6 py-4 border-t border-gray-200">
+                    <div class="text-center text-sm text-gray-600">
+                        Menampilkan {{ $transactions->total() }} data
                     </div>
                 </div>
-            </div>
+            @endif
         </div>
     </div>
 </x-admin-layout>
