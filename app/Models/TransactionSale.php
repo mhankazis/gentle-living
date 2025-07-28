@@ -5,6 +5,8 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use App\Helpers\TransactionHelper;
+use Illuminate\Support\Facades\DB;
 
 class TransactionSale extends Model
 {
@@ -108,5 +110,71 @@ class TransactionSale extends Model
     public function details()
     {
         return $this->hasMany(TransactionSaleDetail::class, 'transaction_sales_id', 'transaction_sales_id');
+    }
+
+    /**
+     * Recalculate and update transaction totals
+     */
+    public function recalculateTotals()
+    {
+        return TransactionHelper::recalculateTransactionTotals($this->transaction_sales_id);
+    }
+
+    /**
+     * Validate transaction consistency
+     */
+    public function validateConsistency()
+    {
+        return TransactionHelper::validateTransactionConsistency($this->transaction_sales_id);
+    }
+
+    /**
+     * Get remaining amount to be paid
+     */
+    public function getRemainingAmountAttribute()
+    {
+        return $this->total_amount - ($this->paid_amount ?? 0);
+    }
+
+    /**
+     * Check if transaction is fully paid
+     */
+    public function getIsPaidAttribute()
+    {
+        return ($this->paid_amount ?? 0) >= $this->total_amount;
+    }
+
+    /**
+     * Get payment status
+     */
+    public function getPaymentStatusAttribute()
+    {
+        $paidAmount = $this->paid_amount ?? 0;
+        
+        if ($paidAmount <= 0) {
+            return 'unpaid';
+        } elseif ($paidAmount >= $this->total_amount) {
+            return 'paid';
+        } else {
+            return 'partial';
+        }
+    }
+
+    /**
+     * Boot the model
+     */
+    protected static function boot()
+    {
+        parent::boot();
+
+        // Generate transaction number automatically
+        static::creating(function ($transaction) {
+            if (empty($transaction->number)) {
+                $transaction->number = TransactionHelper::generateTransactionNumber($transaction->date);
+            }
+        });
+
+        // Removed the saved event listener that was causing infinite loop
+        // The totals are now calculated directly in the controller
     }
 }

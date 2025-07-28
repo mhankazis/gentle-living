@@ -28,11 +28,11 @@ class DashboardController extends Controller
 
             // Top 5 Products by quantity sold
             $topProducts = DB::table('transaction_sales_details as tsd')
-                ->join('master_items as mi', 'tsd.item_id', '=', 'mi.items_id')
+                ->join('master_items as mi', 'tsd.item_id', '=', 'mi.item_id')
                 ->select(
                     'mi.name_items as name',
-                    DB::raw('SUM(tsd.quantity) as total_qty'),
-                    DB::raw('SUM(tsd.quantity * tsd.unit_price) as total_value')
+                    DB::raw('SUM(tsd.qty) as total_qty'),
+                    DB::raw('SUM(tsd.qty * tsd.sell_price) as total_value')
                 )
                 ->groupBy('tsd.item_id', 'mi.name_items')
                 ->orderByDesc('total_qty')
@@ -45,11 +45,11 @@ class DashboardController extends Controller
 
             // Bottom 5 Products by quantity sold
             $bottomProducts = DB::table('transaction_sales_details as tsd')
-                ->join('master_items as mi', 'tsd.item_id', '=', 'mi.items_id')
+                ->join('master_items as mi', 'tsd.item_id', '=', 'mi.item_id')
                 ->select(
                     'mi.name_items as name',
-                    DB::raw('SUM(tsd.quantity) as total_qty'),
-                    DB::raw('SUM(tsd.quantity * tsd.unit_price) as total_value')
+                    DB::raw('SUM(tsd.qty) as total_qty'),
+                    DB::raw('SUM(tsd.qty * tsd.sell_price) as total_value')
                 )
                 ->groupBy('tsd.item_id', 'mi.name_items')
                 ->orderBy('total_qty', 'asc')
@@ -61,24 +61,41 @@ class DashboardController extends Controller
                 });
 
             // Pending Orders (transactions that are not fully paid)
-            $pendingOrdersList = TransactionSale::with(['customer', 'details.item'])
-                ->whereRaw('COALESCE(paid_amount, 0) < total_amount')
-                ->orderBy('date', 'desc')
+            $pendingOrdersList = DB::table('transaction_sales as ts')
+                ->leftJoin('master_customers as mc', 'ts.customer_id', '=', 'mc.customer_id')
+                ->select(
+                    'ts.transaction_sales_id',
+                    'ts.date',
+                    'ts.number',
+                    'mc.name_customer',
+                    'ts.total_amount',
+                    'ts.paid_amount',
+                    'ts.notes'
+                )
+                ->whereRaw('COALESCE(ts.paid_amount, 0) < ts.total_amount')
+                ->orderBy('ts.date', 'desc')
                 ->limit(10)
                 ->get()
                 ->map(function($transaction, $index) {
+                    // Get transaction details for this transaction
+                    $details = DB::table('transaction_sales_details as tsd')
+                        ->leftJoin('master_items as mi', 'tsd.item_id', '=', 'mi.item_id')
+                        ->select('mi.name_items', 'tsd.qty', 'tsd.sell_price')
+                        ->where('tsd.transaction_sales_id', $transaction->transaction_sales_id)
+                        ->get();
+
                     return [
                         'no' => $index + 1,
-                        'date' => $transaction->date->format('d/m/Y'),
+                        'date' => date('d/m/Y', strtotime($transaction->date)),
                         'number' => $transaction->number,
-                        'customer' => $transaction->customer->name_customer ?? 'Walk-in Customer',
-                        'items' => $transaction->details->map(function($detail) {
+                        'customer' => $transaction->name_customer ?? 'Walk-in Customer',
+                        'items' => $details->map(function($detail) {
                             return [
-                                'name' => $detail->item->name_items ?? 'Unknown Item',
-                                'qty' => $detail->quantity,
-                                'subtotal' => $detail->quantity * $detail->unit_price
+                                'name' => $detail->name_items ?? 'Unknown Item',
+                                'qty' => $detail->qty ?? 0,
+                                'subtotal' => ($detail->qty ?? 0) * ($detail->sell_price ?? 0)
                             ];
-                        }),
+                        })->toArray(),
                         'status' => 'Belum Lunas',
                         'total_amount' => $transaction->total_amount,
                         'paid_amount' => $transaction->paid_amount ?? 0,
@@ -151,7 +168,10 @@ class DashboardController extends Controller
                         ['name' => 'Gimme Food (GF)', 'qty' => 5, 'subtotal' => 125000],
                         ['name' => 'Baby Calmer (BC)', 'qty' => 3, 'subtotal' => 75000]
                     ],
-                    'status' => 'Belum Lunas'
+                    'status' => 'Belum Lunas',
+                    'total_amount' => 200000,
+                    'paid_amount' => 50000,
+                    'remaining' => 150000
                 ],
                 [
                     'no' => 2,
@@ -162,7 +182,10 @@ class DashboardController extends Controller
                         ['name' => 'Massage Your Baby (MYB)', 'qty' => 2, 'subtotal' => 50000],
                         ['name' => 'LDR (15ml)', 'qty' => 4, 'subtotal' => 100000]
                     ],
-                    'status' => 'Belum Lunas'
+                    'status' => 'Belum Lunas',
+                    'total_amount' => 150000,
+                    'paid_amount' => 0,
+                    'remaining' => 150000
                 ],
                 [
                     'no' => 3,
@@ -172,7 +195,10 @@ class DashboardController extends Controller
                     'items' => [
                         ['name' => 'Organic Gentle (OG)', 'qty' => 6, 'subtotal' => 150000]
                     ],
-                    'status' => 'Belum Lunas'
+                    'status' => 'Belum Lunas',
+                    'total_amount' => 150000,
+                    'paid_amount' => 75000,
+                    'remaining' => 75000
                 ]
             ]);
             

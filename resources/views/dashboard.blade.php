@@ -194,6 +194,9 @@
                                 <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status Proses</th>
                                 <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Qty</th>
                                 <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Sub Total</th>
+                                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Total Tagihan</th>
+                                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Sudah Dibayar</th>
+                                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Sisa Tagihan</th>
                             </tr>
                         </thead>
                         <tbody class="bg-white divide-y divide-gray-200">
@@ -216,11 +219,22 @@
                                     @endif
                                     <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-900">{{ $item['qty'] }}</td>
                                     <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-900">Rp {{ number_format($item['subtotal'], 0, ',', '.') }}</td>
+                                    @if($index === 0)
+                                        <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-900 font-semibold" rowspan="{{ count($order['items']) }}">
+                                            Rp {{ number_format($order['total_amount'] ?? 0, 0, ',', '.') }}
+                                        </td>
+                                        <td class="px-4 py-4 whitespace-nowrap text-sm text-green-600 font-semibold" rowspan="{{ count($order['items']) }}">
+                                            Rp {{ number_format($order['paid_amount'] ?? 0, 0, ',', '.') }}
+                                        </td>
+                                        <td class="px-4 py-4 whitespace-nowrap text-sm text-red-600 font-semibold" rowspan="{{ count($order['items']) }}">
+                                            Rp {{ number_format($order['remaining'] ?? 0, 0, ',', '.') }}
+                                        </td>
+                                    @endif
                                 </tr>
                                 @endforeach
                             @empty
                             <tr>
-                                <td colspan="8" class="text-center py-12 text-gray-500">
+                                <td colspan="11" class="text-center py-12 text-gray-500">
                                     <div class="flex flex-col items-center justify-center">
                                         <i class="fas fa-clipboard-list text-4xl text-gray-300 mb-4"></i>
                                         <p>Tidak ada pesanan yang belum diproses</p>

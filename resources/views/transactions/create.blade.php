@@ -19,7 +19,7 @@
             <div class="mb-6">
                 <label for="customer_id" class="block text-sm font-medium text-gray-700 mb-2">Customer</label>
                 <select name="customer_id" id="customer_id" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
-                    <option value="">Walk-in Customer</option>
+                    <option value="1">Walk-in Customer (Default)</option>
                     @foreach($customers as $customer)
                         <option value="{{ $customer->customer_id }}">{{ $customer->name_customer }}</option>
                     @endforeach
@@ -61,7 +61,7 @@
                                     <option value="">Pilih Produk</option>
                                     @foreach($products as $product)
                                         <option value="{{ $product->item_id }}" data-price="{{ $product->sellingprice_item }}" data-stock="{{ $product->stock_item }}">
-                                            {{ $product->name_item }} ({{ $product->category->name_category ?? 'N/A' }}) - Stock: {{ $product->stock_item }}
+                                            {{ $product->name_item }} ({{ $product->name_category ?? 'N/A' }}) - Stock: {{ $product->stock_item }}
                                         </option>
                                     @endforeach
                                 </select>
@@ -142,7 +142,7 @@ document.addEventListener('DOMContentLoaded', function() {
                             <option value="">Pilih Produk</option>
                             @foreach($products as $product)
                                 <option value="{{ $product->item_id }}" data-price="{{ $product->sellingprice_item }}" data-stock="{{ $product->stock_item }}">
-                                    {{ $product->name_item }} ({{ $product->category->name_category ?? 'N/A' }}) - Stock: {{ $product->stock_item }}
+                                    {{ $product->name_item }} ({{ $product->name_category ?? 'N/A' }}) - Stock: {{ $product->stock_item }}
                                 </option>
                             @endforeach
                         </select>

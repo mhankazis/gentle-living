@@ -15,6 +15,10 @@ Route::get('/', function () {
     return view('auth.login');
 });
 
+Route::get('/test-transaction2', function () {
+    return view('test-transaction2');
+})->name('test.transaction2');
+
 Route::get('/dashboard', [DashboardController::class, 'index'])->middleware(['auth', 'verified'])->name('dashboard');
 
 // Debug route for invoice statistics (can be removed in production)
