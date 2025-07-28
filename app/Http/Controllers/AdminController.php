@@ -168,7 +168,7 @@ if (User::count() <= 1) {
     return redirect()->route('admins.index')->with('error', 'Tidak dapat menghapus admin terakhir!');
 }
 // Prevent deleting current user
-if (Auth::check() && $admin->id === Auth::id()) {
+if (Auth::check() && $admin->user_id === Auth::id()) {
     return redirect()->route('admins.index')->with('error', 'Tidak dapat menghapus akun sendiri!');
 }
 
