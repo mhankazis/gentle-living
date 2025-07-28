@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use App\Models\Company;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
@@ -16,7 +17,7 @@ class AdminController extends Controller
     public function index(Request $request)
     {
         try {
-            $query = User::query();
+            $query = User::with('company');
 
             // Search functionality
             if ($request->has('search') && $request->search) {
@@ -24,7 +25,10 @@ class AdminController extends Controller
                 $query->where(function($q) use ($search) {
                     $q->where('name', 'like', "%{$search}%")
                       ->orWhere('email', 'like', "%{$search}%")
-                      ->orWhere('phone', 'like', "%{$search}%");
+                      ->orWhere('phone', 'like', "%{$search}%")
+                      ->orWhereHas('company', function($companyQuery) use ($search) {
+                          $companyQuery->where('name_company', 'like', "%{$search}%");
+                      });
                 });
             }
 
@@ -71,7 +75,8 @@ class AdminController extends Controller
      */
     public function create()
     {
-        return view('admins.create');
+        $companies = Company::all();
+        return view('admins.create', compact('companies'));
     }
 
     /**
@@ -85,6 +90,7 @@ class AdminController extends Controller
                 'email' => 'required|email|unique:master_users,email',
                 'password' => 'required|string|min:8|confirmed',
                 'phone' => 'nullable|string|max:20',
+                'company_id' => 'required|exists:master_companies,company_id',
             ]);
 
             $validated['password'] = Hash::make($validated['password']);
@@ -111,7 +117,8 @@ class AdminController extends Controller
      */
     public function edit(User $admin)
     {
-        return view('admins.edit', compact('admin'));
+        $companies = Company::all();
+        return view('admins.edit', compact('admin', 'companies'));
     }
 
     /**
@@ -122,8 +129,9 @@ class AdminController extends Controller
         try {
             $rules = [
                 'name' => 'required|string|max:255',
-                'email' => 'required|email|unique:master_users,email,' . $admin->user_id,
+                'email' => 'required|email|unique:master_users,email,' . $admin->user_id . ',user_id',
                 'phone' => 'nullable|string|max:20',
+                'company_id' => 'required|exists:master_companies,company_id',
             ];
 
             // Only validate password if it's provided
