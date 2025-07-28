@@ -35,6 +35,27 @@
                     @method('PUT')
                     
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <!-- Company -->
+                        <div>
+                            <label for="company_id" class="block text-sm font-medium text-gray-700 mb-2">
+                                Perusahaan <span class="text-red-500">*</span>
+                            </label>
+                            <select id="company_id" 
+                                    name="company_id" 
+                                    required
+                                    class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 @error('company_id') border-red-500 @enderror">
+                                <option value="">Pilih Perusahaan</option>
+                                @foreach($companies as $company)
+                                    <option value="{{ $company->company_id }}" {{ old('company_id', $admin->company_id) == $company->company_id ? 'selected' : '' }}>
+                                        {{ $company->name_company }}
+                                    </option>
+                                @endforeach
+                            </select>
+                            @error('company_id')
+                                <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                            @enderror
+                        </div>
+
                         <!-- Name -->
                         <div>
                             <label for="name" class="block text-sm font-medium text-gray-700 mb-2">

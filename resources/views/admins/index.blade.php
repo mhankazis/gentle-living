@@ -72,7 +72,7 @@
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ID</th>
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nama</th>
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Email</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Role</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Perusahaan</th>
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nomor Telepon</th>
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Aksi</th>
                         </tr>
@@ -80,27 +80,23 @@
                     <tbody class="bg-white divide-y divide-gray-200">
                         @forelse($admins as $admin)
                         <tr class="hover:bg-gray-50">
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ $admin->id }}</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ $admin->user_id }}</td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ $admin->name }}</td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ $admin->email }}</td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium 
-                                    {{ $admin->role === 'Super Admin' ? 'bg-red-100 text-red-800' : 
-                                       ($admin->role === 'Manager' ? 'bg-blue-100 text-blue-800' : 'bg-green-100 text-green-800') }}">
-                                    {{ $admin->role ?? 'Admin' }}
-                                </span>
+                                {{ $admin->company->name_company ?? '-' }}
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ $admin->phone ?? '-' }}</td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
                                 <div class="flex space-x-2">
                                     <!-- Edit Button -->
-                                    <a href="{{ route('admins.edit', $admin) }}" 
+                                    <a href="{{ route('admins.edit', $admin->user_id) }}" 
                                        class="bg-yellow-500 hover:bg-yellow-600 text-white px-3 py-1 rounded text-xs transition-colors duration-200">
                                         <i class="fas fa-edit"></i>
                                     </a>
                                     
                                     <!-- Delete Button -->
-                                    <button onclick="deleteAdmin({{ $admin->id }})" 
+                                    <button onclick="deleteAdmin({{ $admin->user_id }})" 
                                             class="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded text-xs transition-colors duration-200">
                                         <i class="fas fa-trash"></i>
                                     </button>

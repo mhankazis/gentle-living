@@ -73,8 +73,11 @@
                 <h3 class="text-lg font-medium text-gray-800 mb-4">Daftar Produk</h3>
                 <div class="mb-4">
                     <label class="block text-sm font-medium text-gray-700 mb-2">Search :</label>
-                    <select class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
-                        <option>Nama Produk</option>
+                    <select id="product-search" class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                        <option value="">Nama Produk</option>
+                        @foreach($products as $product)
+                            <option value="{{ $product->id }}">{{ $product->name }}</option>
+                        @endforeach
                     </select>
                 </div>
 
@@ -168,6 +171,25 @@ document.getElementById('company-select').addEventListener('change', function() 
         document.getElementById('company-details').classList.add('hidden');
         document.getElementById('cart-company-info').classList.add('hidden');
         updateCheckoutButton();
+    }
+});
+
+// Product search functionality
+document.getElementById('product-search').addEventListener('change', function() {
+    const selectedProductId = this.value;
+    const productCards = document.querySelectorAll('.product-card');
+    
+    if (selectedProductId) {
+        // Hide all products first
+        productCards.forEach(card => card.style.display = 'none');
+        // Show only selected product
+        const selectedCard = document.querySelector(`[data-id="${selectedProductId}"]`);
+        if (selectedCard) {
+            selectedCard.style.display = 'block';
+        }
+    } else {
+        // Show all products
+        productCards.forEach(card => card.style.display = 'block');
     }
 });
 
