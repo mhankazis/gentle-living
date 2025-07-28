@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Invoice;
+use App\Models\TransactionSale;
 use Illuminate\Http\Request;
 
 class InvoiceController extends Controller
@@ -251,7 +252,22 @@ class InvoiceController extends Controller
      */
     public function destroy(string $id)
     {
-        // Redirect to transactions since we don't delete invoices directly
-        return redirect()->route('transactions.index')->with('info', 'Delete transactions to remove invoice data.');
+        try {
+            // Find the transaction sales record
+            $transactionSale = \App\Models\TransactionSale::findOrFail($id);
+            
+            // Store invoice number for success message
+            $invoiceNumber = $transactionSale->number;
+            
+            // Delete the transaction (soft delete)
+            $transactionSale->delete();
+            
+            return redirect()->route('invoices.index')
+                           ->with('success', "Invoice {$invoiceNumber} berhasil dihapus.");
+                           
+        } catch (\Exception $e) {
+            return redirect()->route('invoices.index')
+                           ->with('error', 'Terjadi kesalahan saat menghapus invoice: ' . $e->getMessage());
+        }
     }
 }

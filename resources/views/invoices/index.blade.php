@@ -25,6 +25,43 @@
             </a>
         </div>
 
+        <!-- Flash Messages -->
+        @if(session('success'))
+            <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-6 relative" role="alert">
+                <span class="block sm:inline">{{ session('success') }}</span>
+                <span class="absolute top-0 bottom-0 right-0 px-4 py-3">
+                    <svg class="fill-current h-6 w-6 text-green-500" role="button" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" onclick="this.parentElement.parentElement.style.display='none'">
+                        <title>Close</title>
+                        <path d="M14.348 14.849a1.2 1.2 0 0 1-1.697 0L10 11.819l-2.651 3.029a1.2 1.2 0 1 1-1.697-1.697l2.758-3.15-2.759-3.152a1.2 1.2 0 1 1 1.697-1.697L10 8.183l2.651-3.031a1.2 1.2 0 1 1 1.697 1.697l-2.758 3.152 2.758 3.15a1.2 1.2 0 0 1 0 1.698z"/>
+                    </svg>
+                </span>
+            </div>
+        @endif
+
+        @if(session('error'))
+            <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-6 relative" role="alert">
+                <span class="block sm:inline">{{ session('error') }}</span>
+                <span class="absolute top-0 bottom-0 right-0 px-4 py-3">
+                    <svg class="fill-current h-6 w-6 text-red-500" role="button" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" onclick="this.parentElement.parentElement.style.display='none'">
+                        <title>Close</title>
+                        <path d="M14.348 14.849a1.2 1.2 0 0 1-1.697 0L10 11.819l-2.651 3.029a1.2 1.2 0 1 1-1.697-1.697l2.758-3.15-2.759-3.152a1.2 1.2 0 1 1 1.697-1.697L10 8.183l2.651-3.031a1.2 1.2 0 1 1 1.697 1.697l-2.758 3.152 2.758 3.15a1.2 1.2 0 0 1 0 1.698z"/>
+                    </svg>
+                </span>
+            </div>
+        @endif
+
+        @if(session('info'))
+            <div class="bg-blue-100 border border-blue-400 text-blue-700 px-4 py-3 rounded mb-6 relative" role="alert">
+                <span class="block sm:inline">{{ session('info') }}</span>
+                <span class="absolute top-0 bottom-0 right-0 px-4 py-3">
+                    <svg class="fill-current h-6 w-6 text-blue-500" role="button" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" onclick="this.parentElement.parentElement.style.display='none'">
+                        <title>Close</title>
+                        <path d="M14.348 14.849a1.2 1.2 0 0 1-1.697 0L10 11.819l-2.651 3.029a1.2 1.2 0 1 1-1.697-1.697l2.758-3.15-2.759-3.152a1.2 1.2 0 1 1 1.697-1.697L10 8.183l2.651-3.031a1.2 1.2 0 1 1 1.697 1.697l-2.758 3.152 2.758 3.15a1.2 1.2 0 0 1 0 1.698z"/>
+                    </svg>
+                </span>
+            </div>
+        @endif
+
         <!-- Filters -->
         <div class="bg-white rounded-xl shadow-sm border border-gray-200 mb-6">
             <div class="p-6">
@@ -138,11 +175,6 @@
                                        title="Lihat Invoice">
                                         <i class="fas fa-file-invoice"></i>
                                     </a>
-                                    <a href="{{ route('transactions.show', $invoice->transaction_sales_id) }}" 
-                                       class="bg-green-500 hover:bg-green-600 text-white px-3 py-1 rounded text-xs transition-colors duration-200"
-                                       title="Detail Transaksi">
-                                        <i class="fas fa-eye"></i>
-                                    </a>
                                     @if($invoice->paid_amount < $invoice->total_amount)
                                     <button class="bg-yellow-500 hover:bg-yellow-600 text-white px-3 py-1 rounded text-xs transition-colors duration-200"
                                             onclick="updatePayment({{ $invoice->transaction_sales_id }})"
@@ -150,6 +182,11 @@
                                         <i class="fas fa-money-bill"></i>
                                     </button>
                                     @endif
+                                    <button class="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded text-xs transition-colors duration-200"
+                                            onclick="deleteInvoice({{ $invoice->transaction_sales_id }}, '{{ $invoice->number }}')"
+                                            title="Hapus Invoice">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
                                 </div>
                             </td>
                         </tr>
@@ -192,6 +229,34 @@
         function updatePayment(transactionId) {
             // Redirect to payment update page or show modal
             window.location.href = `/transactions/${transactionId}/payment`;
+        }
+
+        function deleteInvoice(transactionId, invoiceNumber) {
+            // Show confirmation dialog
+            if (confirm(`Apakah Anda yakin ingin menghapus invoice ${invoiceNumber}? Tindakan ini tidak dapat dibatalkan.`)) {
+                // Create form for DELETE request
+                const form = document.createElement('form');
+                form.method = 'POST';
+                form.action = `/invoices/${transactionId}`;
+                
+                // Add CSRF token
+                const csrfToken = document.createElement('input');
+                csrfToken.type = 'hidden';
+                csrfToken.name = '_token';
+                csrfToken.value = '{{ csrf_token() }}';
+                form.appendChild(csrfToken);
+                
+                // Add DELETE method
+                const methodInput = document.createElement('input');
+                methodInput.type = 'hidden';
+                methodInput.name = '_method';
+                methodInput.value = 'DELETE';
+                form.appendChild(methodInput);
+                
+                // Submit form
+                document.body.appendChild(form);
+                form.submit();
+            }
         }
 
         // Auto-refresh every 30 seconds for real-time updates

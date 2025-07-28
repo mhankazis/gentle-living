@@ -4,9 +4,7 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
-use App\Models\TransactionSale;
-use App\Models\TransactionSaleDetail;
-use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
 
 class TransactionSalesSeeder extends Seeder
 {
@@ -15,92 +13,194 @@ class TransactionSalesSeeder extends Seeder
      */
     public function run(): void
     {
-        // Generate transaction data for the last 30 days
-        $transactions = [];
-        
-        for ($i = 0; $i < 50; $i++) {
-            $date = Carbon::now()->subDays(rand(0, 30));
-            $transactionNumber = 'TXN-' . $date->format('Ymd') . '-' . str_pad($i + 1, 4, '0', STR_PAD_LEFT);
-            
-            $subtotal = rand(50000, 500000);
-            $discountPercentage = rand(0, 20);
-            $discountAmount = $subtotal * ($discountPercentage / 100);
-            $totalAmount = $subtotal - $discountAmount;
-            $paidAmount = $totalAmount + rand(0, 50000); // Sometimes overpaid
-            $changeAmount = $paidAmount - $totalAmount;
-            
-            $transaction = TransactionSale::create([
-                'branch_id' => rand(1, 3), // Random branch from 1-3
-                'payment_method_id' => rand(1, 6), // Random payment method from 1-6
-                'user_id' => rand(1, 4), // Random user from 1-4
-                'customer_id' => rand(1, 3), // Random customer from 1-3
-                'sales_type_id' => rand(1, 3), // Random sales type from 1-3
-                'number' => $transactionNumber,
-                'date' => $date,
-                'notes' => $this->getRandomNotes(),
-                'subtotal' => $subtotal,
-                'discount_amount' => $discountAmount,
-                'discount_percentage' => $discountPercentage,
-                'total_amount' => $totalAmount,
-                'paid_amount' => $paidAmount,
-                'change_amount' => $changeAmount,
-                'whatsapp' => '+628' . rand(1000000000, 9999999999),
-                'created_at' => $date,
-                'updated_at' => $date,
-            ]);
-            
-            // Add transaction details (items)
-            $numItems = rand(1, 5); // 1-5 items per transaction
-            $detailSubtotal = 0;
-            
-            for ($j = 0; $j < $numItems; $j++) {
-                $itemId = rand(1, 6); // Random item from 1-6
-                $qty = rand(1, 10);
-                $costPrice = rand(15000, 25000);
-                $sellPrice = rand(20000, 35000);
-                $itemSubtotal = $qty * $sellPrice;
-                $itemDiscountPercentage = rand(0, 10);
-                $itemDiscountAmount = $itemSubtotal * ($itemDiscountPercentage / 100);
-                $itemTotalAmount = $itemSubtotal - $itemDiscountAmount;
-                
-                TransactionSaleDetail::create([
-                    'transaction_sales_id' => $transaction->transaction_sales_id,
-                    'item_id' => $itemId,
-                    'qty' => $qty,
-                    'costprice' => $costPrice,
-                    'sell_price' => $sellPrice,
-                    'subtotal' => $itemSubtotal,
-                    'discount_amount' => $itemDiscountAmount,
-                    'discount_percentage' => $itemDiscountPercentage,
-                    'total_amount' => $itemTotalAmount,
-                    'created_at' => $date,
-                    'updated_at' => $date,
-                ]);
-                
-                $detailSubtotal += $itemTotalAmount;
-            }
-            
-            // Update transaction subtotal based on actual item details
-            $transaction->update(['subtotal' => $detailSubtotal]);
-        }
-    }
-    
-    private function getRandomNotes(): ?string
-    {
-        $notes = [
-            'Pesanan untuk event ulang tahun',
-            'Pembelian untuk stok bulanan',
-            'Orderan khusus pelanggan VIP',
-            'Pesanan urgent - kirim segera',
-            'Paket bundling produk',
-            'Pesanan untuk acara gathering',
-            'Pembelian rutin mingguan',
-            'Orderan custom packaging',
-            'Pesanan untuk hadiah',
-            'Pembelian wholesale',
-            null, // Some transactions without notes
-        ];
-        
-        return $notes[array_rand($notes)];
+        // Seed transaction sales (some paid, some unpaid, some partial)
+        DB::table('transaction_sales')->insert([
+            [
+                'transaction_sales_id' => 1,
+                'branch_id' => 1,
+                'payment_method_id' => 1,
+                'user_id' => 1,
+                'customer_id' => 2,
+                'sales_type_id' => 1,
+                'number' => 'TRX-20250724-001',
+                'date' => now()->subDays(1),
+                'notes' => 'Transaksi belum lunas',
+                'subtotal' => 75000,
+                'discount_amount' => 0,
+                'discount_percentage' => 0,
+                'total_amount' => 75000,
+                'paid_amount' => 0, // Belum bayar
+                'change_amount' => 0,
+                'whatsapp' => '081234567890',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'transaction_sales_id' => 2,
+                'branch_id' => 1,
+                'payment_method_id' => 2,
+                'user_id' => 1,
+                'customer_id' => 3,
+                'sales_type_id' => 1,
+                'number' => 'TRX-20250723-002',
+                'date' => now()->subDays(2),
+                'notes' => 'Pembayaran partial',
+                'subtotal' => 100000,
+                'discount_amount' => 0,
+                'discount_percentage' => 0,
+                'total_amount' => 100000,
+                'paid_amount' => 50000, // Partial payment
+                'change_amount' => 0,
+                'whatsapp' => '081234567891',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'transaction_sales_id' => 3,
+                'branch_id' => 1,
+                'payment_method_id' => 1,
+                'user_id' => 1,
+                'customer_id' => 1,
+                'sales_type_id' => 1,
+                'number' => 'TRX-20250722-003',
+                'date' => now()->subDays(3),
+                'notes' => 'Transaksi sudah lunas',
+                'subtotal' => 60000,
+                'discount_amount' => 0,
+                'discount_percentage' => 0,
+                'total_amount' => 60000,
+                'paid_amount' => 60000, // Fully paid
+                'change_amount' => 0,
+                'whatsapp' => null,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'transaction_sales_id' => 4,
+                'branch_id' => 1,
+                'payment_method_id' => 1,
+                'user_id' => 1,
+                'customer_id' => 2,
+                'sales_type_id' => 1,
+                'number' => 'TRX-20250721-004',
+                'date' => now()->subDays(4),
+                'notes' => 'Transaksi belum lunas',
+                'subtotal' => 120000,
+                'discount_amount' => 0,
+                'discount_percentage' => 0,
+                'total_amount' => 120000,
+                'paid_amount' => 0, // Belum bayar
+                'change_amount' => 0,
+                'whatsapp' => '081234567890',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+        ]);
+
+        // Seed transaction sales details
+        DB::table('transaction_sales_details')->insert([
+            // For transaction 1 (unpaid)
+            [
+                'transaction_sales_detail_id' => 1,
+                'transaction_sales_id' => 1,
+                'item_id' => 1,
+                'qty' => 2,
+                'costprice' => 20000,
+                'sell_price' => 25000,
+                'subtotal' => 50000,
+                'discount_amount' => 0,
+                'discount_percentage' => 0,
+                'total_amount' => 50000,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'transaction_sales_detail_id' => 2,
+                'transaction_sales_id' => 1,
+                'item_id' => 2,
+                'qty' => 1,
+                'costprice' => 15000,
+                'sell_price' => 25000,
+                'subtotal' => 25000,
+                'discount_amount' => 0,
+                'discount_percentage' => 0,
+                'total_amount' => 25000,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            // For transaction 2 (partial payment)
+            [
+                'transaction_sales_detail_id' => 3,
+                'transaction_sales_id' => 2,
+                'item_id' => 1,
+                'qty' => 4,
+                'costprice' => 20000,
+                'sell_price' => 25000,
+                'subtotal' => 100000,
+                'discount_amount' => 0,
+                'discount_percentage' => 0,
+                'total_amount' => 100000,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            // For transaction 3 (fully paid)
+            [
+                'transaction_sales_detail_id' => 4,
+                'transaction_sales_id' => 3,
+                'item_id' => 2,
+                'qty' => 2,
+                'costprice' => 15000,
+                'sell_price' => 20000,
+                'subtotal' => 40000,
+                'discount_amount' => 0,
+                'discount_percentage' => 0,
+                'total_amount' => 40000,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'transaction_sales_detail_id' => 5,
+                'transaction_sales_id' => 3,
+                'item_id' => 1,
+                'qty' => 1,
+                'costprice' => 20000,
+                'sell_price' => 20000,
+                'subtotal' => 20000,
+                'discount_amount' => 0,
+                'discount_percentage' => 0,
+                'total_amount' => 20000,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            // For transaction 4 (unpaid)
+            [
+                'transaction_sales_detail_id' => 6,
+                'transaction_sales_id' => 4,
+                'item_id' => 1,
+                'qty' => 3,
+                'costprice' => 20000,
+                'sell_price' => 25000,
+                'subtotal' => 75000,
+                'discount_amount' => 0,
+                'discount_percentage' => 0,
+                'total_amount' => 75000,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'transaction_sales_detail_id' => 7,
+                'transaction_sales_id' => 4,
+                'item_id' => 2,
+                'qty' => 3,
+                'costprice' => 15000,
+                'sell_price' => 15000,
+                'subtotal' => 45000,
+                'discount_amount' => 0,
+                'discount_percentage' => 0,
+                'total_amount' => 45000,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+        ]);
     }
 }
