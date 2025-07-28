@@ -20,6 +20,16 @@ class Product extends Model
      */
     protected $primaryKey = 'item_id';
 
+    /**
+     * Get the route key for the model.
+     *
+     * @return string
+     */
+    public function getRouteKeyName()
+    {
+        return 'item_id';
+    }
+
     protected $fillable = [
         'category_id',
         'name_item',
@@ -28,10 +38,15 @@ class Product extends Model
         'netweight_item',
         'contain_item',
         'costprice_item',
+        'sell_price',
+        'stock',
+        'unit_item',
     ];
 
     protected $casts = [
         'costprice_item' => 'decimal:2',
+        'sell_price' => 'decimal:2',
+        'stock' => 'integer',
     ];
 
     // Accessor for backward compatibility
@@ -45,48 +60,44 @@ class Product extends Model
         return $this->description_item;
     }
 
-    // Backward compatibility for sellingprice_item to costprice_item
+    // Accessor for sellingprice_item - now reads from sell_price field
     public function getSellingpriceItemAttribute()
     {
-        // Use costprice_item as base and add markup
-        return $this->costprice_item ? $this->costprice_item * 1.5 : 0;
+        return $this->sell_price ?? ($this->costprice_item ? $this->costprice_item * 1.5 : 0);
     }
 
     public function setSellingpriceItemAttribute($value)
     {
-        // This is just for compatibility, we don't store it
+        $this->attributes['sell_price'] = $value;
     }
 
     // Backward compatibility for sell_price
-    public function getSellPriceAttribute()
+    public function getSellPriceAttribute($value)
     {
-        return $this->getSellingpriceItemAttribute();
+        return $value ?? ($this->costprice_item ? $this->costprice_item * 1.5 : 0);
     }
 
-    // Backward compatibility for stock_item
+    // Accessor for stock_item - now reads from stock field
     public function getStockItemAttribute()
     {
-        // Return a default stock value since it's not in database
-        return 10;
+        return $this->stock ?? 0;
     }
 
     public function setStockItemAttribute($value)
     {
-        // This is just for compatibility, we don't store it
+        $this->attributes['stock'] = $value;
     }
 
-    // Add stock attribute
-    public function getStockAttribute()
+    // Add stock attribute - now reads from database field
+    public function getStockAttribute($value)
     {
-        // Return total stock across all branches, or default value
-        $branchStock = $this->branchStocks()->sum('stock');
-        return $branchStock > 0 ? $branchStock : 10; // Default to 10 if no branch stock
+        return $value ?? 0;
     }
 
-    // Add unit_item attribute
-    public function getUnitItemAttribute()
+    // Add unit_item attribute - now reads from database field
+    public function getUnitItemAttribute($value)
     {
-        return 'pcs'; // Default unit
+        return $value ?? 'pcs'; // Default unit if not set
     }
 
     // Add image attribute

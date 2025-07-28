@@ -109,6 +109,32 @@
                             @enderror
                         </div>
 
+                        <!-- Selling Price -->
+                        <div>
+                            <label for="sellingprice_item" class="block text-sm font-medium text-gray-700 mb-2">
+                                <i class="fas fa-money-bill-wave mr-2 text-green-500"></i>
+                                Harga Jual
+                            </label>
+                            <div class="relative">
+                                <span class="absolute left-3 top-3 text-gray-500 text-sm">Rp</span>
+                                <input type="number" 
+                                       id="sellingprice_item" 
+                                       name="sellingprice_item" 
+                                       value="{{ old('sellingprice_item', $product->sellingprice_item) }}"
+                                       class="w-full border border-gray-300 rounded-lg pl-10 pr-4 py-3 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 @error('sellingprice_item') border-red-300 @enderror"
+                                       placeholder="0"
+                                       min="0"
+                                       step="0.01"
+                                       required>
+                            </div>
+                            @error('sellingprice_item')
+                                <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                            @enderror
+                        </div>
+                    </div>
+
+                    <!-- Two Column Layout for Weight and Stock -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <!-- Net Weight -->
                         <div>
                             <label for="netweight_item" class="block text-sm font-medium text-gray-700 mb-2">
@@ -122,6 +148,24 @@
                                    class="w-full border border-gray-300 rounded-lg px-4 py-3 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 @error('netweight_item') border-red-300 @enderror"
                                    placeholder="Contoh: 100ml, 50gr, dll">
                             @error('netweight_item')
+                                <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                            @enderror
+                        </div>
+
+                        <!-- Stock -->
+                        <div>
+                            <label for="stock_item" class="block text-sm font-medium text-gray-700 mb-2">
+                                <i class="fas fa-boxes mr-2 text-blue-500"></i>
+                                Stok
+                            </label>
+                            <input type="number" 
+                                   id="stock_item" 
+                                   name="stock_item" 
+                                   value="{{ old('stock_item', $product->stock_item) }}"
+                                   class="w-full border border-gray-300 rounded-lg px-4 py-3 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 @error('stock_item') border-red-300 @enderror"
+                                   placeholder="0"
+                                   min="0">
+                            @error('stock_item')
                                 <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                             @enderror
                         </div>
@@ -143,24 +187,48 @@
                         @enderror
                     </div>
 
-                    <!-- Category -->
-                    <div>
-                        <label for="category_id" class="block text-sm font-medium text-gray-700 mb-2">
-                            <i class="fas fa-folder mr-2 text-orange-500"></i>
-                            Kategori Produk
-                        </label>
-                        <select id="category_id" 
-                                name="category_id"
-                                class="w-full border border-gray-300 rounded-lg px-4 py-3 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 @error('category_id') border-red-300 @enderror">
-                            <option value="">Pilih Kategori</option>
-                            <option value="1" {{ old('category_id', $product->category_id) == 1 ? 'selected' : '' }}>Essential Oil</option>
-                            <option value="2" {{ old('category_id', $product->category_id) == 2 ? 'selected' : '' }}>Baby Care</option>
-                            <option value="3" {{ old('category_id', $product->category_id) == 3 ? 'selected' : '' }}>Health Care</option>
-                            <option value="4" {{ old('category_id', $product->category_id) == 4 ? 'selected' : '' }}>Beauty Care</option>
-                        </select>
-                        @error('category_id')
-                            <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                        @enderror
+                    <!-- Category and Unit -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <!-- Category -->
+                        <div>
+                            <label for="category_id" class="block text-sm font-medium text-gray-700 mb-2">
+                                <i class="fas fa-folder mr-2 text-orange-500"></i>
+                                Kategori Produk
+                            </label>
+                            <select id="category_id" 
+                                    name="category_id"
+                                    class="w-full border border-gray-300 rounded-lg px-4 py-3 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 @error('category_id') border-red-300 @enderror">
+                                <option value="">Pilih Kategori</option>
+                                <option value="1" {{ old('category_id', $product->category_id) == 1 ? 'selected' : '' }}>Essential Oil</option>
+                                <option value="2" {{ old('category_id', $product->category_id) == 2 ? 'selected' : '' }}>Baby Care</option>
+                                <option value="3" {{ old('category_id', $product->category_id) == 3 ? 'selected' : '' }}>Health Care</option>
+                                <option value="4" {{ old('category_id', $product->category_id) == 4 ? 'selected' : '' }}>Beauty Care</option>
+                            </select>
+                            @error('category_id')
+                                <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                            @enderror
+                        </div>
+
+                        <!-- Unit -->
+                        <div>
+                            <label for="unit_item" class="block text-sm font-medium text-gray-700 mb-2">
+                                <i class="fas fa-ruler mr-2 text-teal-500"></i>
+                                Satuan
+                            </label>
+                            <select id="unit_item" 
+                                    name="unit_item"
+                                    class="w-full border border-gray-300 rounded-lg px-4 py-3 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 @error('unit_item') border-red-300 @enderror">
+                                <option value="">Pilih Satuan</option>
+                                <option value="pcs" {{ old('unit_item', $product->unit_item) == 'pcs' ? 'selected' : '' }}>Pieces (pcs)</option>
+                                <option value="botol" {{ old('unit_item', $product->unit_item) == 'botol' ? 'selected' : '' }}>Botol</option>
+                                <option value="box" {{ old('unit_item', $product->unit_item) == 'box' ? 'selected' : '' }}>Box</option>
+                                <option value="gram" {{ old('unit_item', $product->unit_item) == 'gram' ? 'selected' : '' }}>Gram</option>
+                                <option value="ml" {{ old('unit_item', $product->unit_item) == 'ml' ? 'selected' : '' }}>Mililiter (ml)</option>
+                            </select>
+                            @error('unit_item')
+                                <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                            @enderror
+                        </div>
                     </div>
 
                     <!-- Form Actions -->

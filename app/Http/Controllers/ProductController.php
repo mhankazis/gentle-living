@@ -146,6 +146,9 @@ class ProductController extends Controller
             $validated = $request->validate([
                 'name_item' => 'required|string|max:255',
                 'description_item' => 'nullable|string',
+                'ingredient_item' => 'nullable|string',
+                'netweight_item' => 'nullable|string',
+                'contain_item' => 'nullable|string',
                 'costprice_item' => 'required|numeric|min:0',
                 'sellingprice_item' => 'required|numeric|min:0',
                 'stock_item' => 'nullable|integer|min:0',
@@ -164,11 +167,6 @@ class ProductController extends Controller
                 $validated['stock'] = $validated['stock_item'];
                 unset($validated['stock_item']);
             }
-
-            // Hapus field yang null
-            $validated = array_filter($validated, function($value) {
-                return $value !== null;
-            });
 
             $product->update($validated);
             return redirect()->route('products.index')->with('success', 'Produk berhasil diperbarui!');
