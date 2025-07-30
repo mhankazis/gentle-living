@@ -170,13 +170,6 @@
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
                                 <div class="flex space-x-2">
-                                    <!-- View Invoice Button -->
-                                    <a href="{{ route('transactions.invoice', $transaction->transaction_sales_id) }}" 
-                                       class="bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded text-xs transition-colors duration-200">
-                                        <i class="fas fa-file-invoice mr-1"></i>
-                                        Invoice
-                                    </a>
-                                    
                                     <!-- View Details Button -->
                                     <a href="{{ route('transactions.show', $transaction->transaction_sales_id) }}" 
                                        class="bg-green-500 hover:bg-green-600 text-white px-3 py-1 rounded text-xs transition-colors duration-200">

@@ -52,7 +52,7 @@
                                 <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ID</th>
                                 <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nama</th>
                                 <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">HPP</th>
-                                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Price</th>
+                                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">HJ</th>
                                 <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Ukuran Volume</th>
                                 <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Is Cashback</th>
                                 <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nilai Cashback</th>
@@ -66,7 +66,7 @@
                                 <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-900">{{ $product->item_id }}</td>
                                 <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-900 font-medium">{{ $product->name_item }}</td>
                                 <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-900">Rp {{ number_format($product->costprice_item, 0, ',', '.') }}</td>
-                                <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-900">-</td>
+                                <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-900">Rp {{ number_format($product->sellingprice_item, 0, ',', '.') }}</td>
                                 <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-900">{{ $product->netweight_item ?? '-' }}</td>
                                 <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-900">
                                     <span class="text-red-600">Tidak</span>
