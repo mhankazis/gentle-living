@@ -93,7 +93,7 @@
                                     
                                     <!-- Delete Button -->
                                     <button onclick="deleteCompany({{ $company->company_id }})" 
-                                            class="bg-gray-500 hover:bg-gray-600 text-white px-3 py-1 rounded text-xs transition-colors duration-200">
+                                            class="bg-red-500 hover:bg-gray-600 text-white px-3 py-1 rounded text-xs transition-colors duration-200">
                                         <i class="fas fa-trash"></i>
                                     </button>
                                 </div>
